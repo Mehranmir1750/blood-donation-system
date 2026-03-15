@@ -1,0 +1,1181 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    height: 100%;
+    overflow-y: scroll;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #f6f7fb 0%, #e9ecef 100%);
+    margin: 0;
+    padding: 0;
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+
+  /* Navbar */
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    padding: 18px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+  }
+
+  .navbar .navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .navbar h2 {
+    color: white;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .navbar .admin-badge {
+    background: linear-gradient(135deg, #e63946, #9b2226);
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .navbar .logout-btn {
+    background: linear-gradient(135deg, #e63946, #9b2226);
+    color: white;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 8px rgba(230, 57, 70, 0.3);
+    cursor: pointer;
+  }
+
+  .navbar .logout-btn:hover {
+    background: linear-gradient(135deg, #9b2226, #e63946);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(230, 57, 70, 0.5);
+  }
+
+  /* Container */
+  .container {
+    width: 90%;
+    max-width: 1600px;
+    margin: 100px auto 60px;
+    padding: 0;
+    animation: fadeIn 0.6s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Dashboard Header */
+  .dashboard-header {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    padding: 50px;
+    border-radius: 24px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    color: white;
+  }
+
+  .dashboard-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #e63946, #667eea, #f093fb);
+  }
+
+  .dashboard-header::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(230, 57, 70, 0.15), transparent);
+    border-radius: 50%;
+  }
+
+  .dashboard-header-content {
+    position: relative;
+    z-index: 2;
+  }
+
+  .dashboard-header h2 {
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .dashboard-header p {
+    font-size: 16px;
+    font-weight: 400;
+    margin: 0;
+    opacity: 0.9;
+  }
+
+  .dashboard-header .current-time {
+    margin-top: 15px;
+    font-size: 14px;
+    opacity: 0.7;
+    font-weight: 500;
+  }
+
+  /* Statistics Cards */
+  .stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+  }
+
+  .stat-card {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 2px solid #f0f0f0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    transition: transform 0.4s ease;
+  }
+
+  .stat-card.hospitals::before {
+    background: linear-gradient(90deg, #667eea, #764ba2);
+  }
+
+  .stat-card.patients::before {
+    background: linear-gradient(90deg, #f093fb, #f5576c);
+  }
+
+  .stat-card:hover::before {
+    transform: scaleX(1);
+  }
+
+  .stat-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+    border-color: #e63946;
+  }
+
+  .stat-card .stat-icon {
+    font-size: 45px;
+    margin-bottom: 15px;
+    display: block;
+  }
+
+  .stat-card .stat-label {
+    font-size: 13px;
+    color: #718096;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+  }
+
+  .stat-card .stat-value {
+    font-size: 36px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #e63946, #667eea);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Quick Actions */
+  .quick-actions {
+    background: white;
+    padding: 35px;
+    border-radius: 24px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .quick-actions::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #e63946, #667eea, #f093fb);
+  }
+
+  .quick-actions h3 {
+    color: #2d3748;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .action-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .action-btn {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 20px;
+    border-radius: 16px;
+    border: 2px solid #e9ecef;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    text-decoration: none;
+    color: #2d3748;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .action-btn:hover {
+    background: white;
+    border-color: #e63946;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(230, 57, 70, 0.2);
+  }
+
+  .action-btn .action-icon {
+    font-size: 30px;
+  }
+
+  /* Tab Navigation */
+  .tab-navigation {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  }
+
+  .tab-btn {
+    padding: 12px 28px;
+    border: 2px solid #e9ecef;
+    background: white;
+    color: #4a5568;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .tab-btn:hover {
+    border-color: #e63946;
+    color: #e63946;
+    background: #fff5f5;
+  }
+
+  .tab-btn.active {
+    background: linear-gradient(135deg, #e63946, #9b2226);
+    color: white;
+    border-color: #e63946;
+    box-shadow: 0 4px 15px rgba(230, 57, 70, 0.3);
+  }
+
+  /* Section */
+  .section {
+    background: white;
+    padding: 40px;
+    border-radius: 24px;
+    margin-bottom: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+    animation: fadeInUp 0.8s ease;
+    display: none;
+  }
+
+  .section.active {
+    display: block;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #e63946, #667eea, #f093fb);
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+  }
+
+  .section-header h3 {
+    color: #2d3748;
+    font-size: 24px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+  }
+
+  .section-header-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+
+  .section-badge {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 8px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+  }
+
+  .filter-dropdown {
+    padding: 10px 20px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    background: white;
+    transition: all 0.3s ease;
+  }
+
+  .filter-dropdown:hover {
+    border-color: #e63946;
+  }
+
+  /* Table Wrapper */
+  .table-wrapper {
+    overflow-x: auto;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+  }
+
+  /* Table Header */
+  thead {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  th {
+    padding: 18px 20px;
+    text-align: center;
+    font-size: 13px;
+    color: white;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border: none;
+  }
+
+  th:first-child {
+    border-top-left-radius: 12px;
+  }
+
+  th:last-child {
+    border-top-right-radius: 12px;
+  }
+
+  /* Table Body */
+  tbody tr {
+    background: white;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  tbody tr:hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    transform: scale(1.005);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  }
+
+  tbody tr:nth-child(even) {
+    background: #f8f9fa;
+  }
+
+  tbody tr:nth-child(even):hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  }
+
+  tbody td {
+    padding: 18px 20px;
+    text-align: center;
+    color: #2d3748;
+    font-size: 14px;
+    font-weight: 500;
+    border: none;
+  }
+
+  /* ID Column */
+  tbody td:first-child {
+    font-weight: 700;
+    color: #667eea;
+    font-size: 15px;
+  }
+
+  /* Verification Badge */
+  .verification-badge {
+    display: inline-block;
+    padding: 7px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .verification-verified {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    color: #155724;
+  }
+
+  .verification-unverified {
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    color: #856404;
+  }
+
+  /* Blood Group Badge */
+  .blood-group-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #e63946, #9b2226);
+    color: white;
+    padding: 7px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1px;
+    box-shadow: 0 3px 10px rgba(230, 57, 70, 0.3);
+  }
+
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+  }
+
+  .empty-state-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+  }
+
+  .empty-state-text {
+    font-size: 20px;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 10px;
+  }
+
+  .empty-state-subtext {
+    font-size: 15px;
+    color: #a0aec0;
+  }
+
+  /* Action Buttons */
+  .btn {
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 4px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    letter-spacing: 0.3px;
+  }
+
+  .btn-approve {
+    background: linear-gradient(135deg, #27ae60, #229954);
+    color: white;
+  }
+
+  .btn-approve:hover {
+    background: linear-gradient(135deg, #229954, #1e8449);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
+  }
+
+  .btn-reject {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+  }
+
+  .btn-reject:hover {
+    background: linear-gradient(135deg, #c0392b, #a93226);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+  }
+
+  .btn-view {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+  }
+
+  .btn-view:hover {
+    background: linear-gradient(135deg, #2980b9, #21618c);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+  }
+
+  .btn-delete {
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+    color: white;
+  }
+
+  .btn-delete:hover {
+    background: linear-gradient(135deg, #7f8c8d, #636e72);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(127, 140, 141, 0.4);
+  }
+
+  /* Search Bar */
+  .search-container {
+    margin-bottom: 25px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+
+  .search-bar {
+    flex: 1;
+    padding: 14px 20px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .search-bar:focus {
+    outline: none;
+    border-color: #e63946;
+    box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.1);
+  }
+
+  .search-btn {
+    padding: 14px 30px;
+    background: linear-gradient(135deg, #e63946, #9b2226);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 15px;
+  }
+
+  .search-btn:hover {
+    background: linear-gradient(135deg, #9b2226, #e63946);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(230, 57, 70, 0.4);
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .navbar {
+      padding: 15px 20px;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .navbar h2 {
+      font-size: 20px;
+    }
+
+    .container {
+      margin: 140px auto 40px;
+      width: 95%;
+    }
+
+    .dashboard-header {
+      padding: 30px 20px;
+    }
+
+    .dashboard-header h2 {
+      font-size: 26px;
+    }
+
+    .section {
+      padding: 25px 15px;
+    }
+
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    .stats-container {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .action-buttons {
+      grid-template-columns: 1fr;
+    }
+
+    .tab-navigation {
+      flex-direction: column;
+    }
+
+    .tab-btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    table {
+      font-size: 12px;
+    }
+
+    th, td {
+      padding: 12px 8px;
+    }
+
+    .btn {
+      padding: 7px 14px;
+      font-size: 11px;
+      margin: 2px;
+    }
+
+    .table-wrapper {
+      overflow-x: scroll;
+    }
+
+    .search-container {
+      flex-direction: column;
+    }
+
+    .search-btn {
+      width: 100%;
+    }
+  }
+
+  /* Scrollbar Styling */
+  .table-wrapper::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .table-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #e63946, #9b2226);
+    border-radius: 10px;
+  }
+
+  .table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #9b2226;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #e63946, #9b2226);
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #9b2226;
+  }
+</style>
+
+<div class="navbar">
+  <div class="navbar-left">
+    <h2>🛡️ Admin Panel</h2>
+    <span class="admin-badge">Super Admin</span>
+  </div>
+  <a href="{{ url_for('home') }}" class="logout-btn">🚪 Logout</a>
+</div>
+
+<div class="container">
+  <!-- Dashboard Header -->
+  <div class="dashboard-header">
+    <div class="dashboard-header-content">
+      <h2>👨‍💼 Admin Control Center</h2>
+      <p>Complete oversight and management of the Blood Donation System</p>
+      <div class="current-time" id="currentTime"></div>
+    </div>
+  </div>
+
+  <!-- Statistics Cards -->
+<!--  <div class="stats-container">-->
+<!--    <div class="stat-card hospitals">-->
+<!--      <span class="stat-icon">🏥</span>-->
+<!--      <div class="stat-label">Total Hospitals</div>-->
+<!--      <div class="stat-value">{{ hospitals|length }}</div>-->
+<!--    </div>-->
+<!--    <div class="stat-card patients">-->
+<!--      <span class="stat-icon">🧑‍⚕️</span>-->
+<!--      <div class="stat-label">Total Patients</div>-->
+<!--      <div class="stat-value">{{ patients|length }}</div>-->
+<!--    </div>-->
+<!--  </div>-->
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <h3>⚡ Quick Actions</h3>
+    <div class="action-buttons">
+      <a href="{{ url_for('manage_hospitals') }}" class="action-btn" onclick="showTab('hospitals')">
+        <span class="action-icon">🏥</span>
+        <span>Manage Hospitals</span>
+      </a>
+      <a href="{{ url_for('view_patient') }}" class="action-btn" onclick="showTab('patients')">
+        <span class="action-icon">🧑‍⚕️</span>
+        <span>View Patients/Donors</span>
+      </a>
+<!--     -->
+    </div>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="tab-navigation">
+<!--    <button class="tab-btn active" onclick="showTab('hospitals')" id="tab-hospitals">-->
+<!--      🏥 Hospitals Management-->
+<!--    </button>-->
+    <button class="tab-btn" onclick="showTab('pending')" id="tab-pending">
+      ⏳ Pending Approvals <span style="background: #e63946; color: white; padding: 3px 8px; border-radius: 10px; font-size: 11px; margin-left: 5px;">{{ hospitals|selectattr('is_verified', 'equalto', False)|list|length }}</span>
+    </button>
+    <button class="tab-btn" onclick="showTab('patients')" id="tab-patients">
+      🧑‍⚕️ Patients Registry
+    </button>
+  </div>
+
+  <!-- Pending Approvals Section -->
+  <div class="section active" id="section-pending">
+    <div class="section-header">
+      <h3>⏳ Pending Hospital Approvals</h3>
+      <div class="section-header-actions">
+        <span class="section-badge">{{ hospitals|selectattr('is_verified', 'equalto', False)|list|length }} Pending</span>
+      </div>
+    </div>
+
+    <div class="search-container">
+      <input type="text" class="search-bar" placeholder="🔍 Search hospitals by name, email, or contact..." id="searchHospitals">
+      <button class="search-btn" onclick="searchTable('searchHospitals', 'hospitalsTable')">Search</button>
+    </div>
+
+    <div class="table-wrapper">
+      <table id="hospitalsTable">
+        <thead>
+          <tr>
+            <th>S.No</th>
+            <th>Hospital Name</th>
+            <th>Email Address</th>
+            <th>Contact Number</th>
+            <th>Verification Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if pending_hospitals %}
+            {% for h in pending_hospitals %}
+            <tr class="hospital-row" data-verified="{{ h.is_verified }}">
+              <td>{{ loop.index }}</td>
+              <td>{{ h.username }}</td>
+              <td>{{ h.email }}</td>
+              <td>{{ h.contact }}</td>
+
+
+              <td>
+                {% if h.is_verified %}
+                  <span class="verification-badge verification-verified">✅ Verified</span>
+                {% else %}
+                  <span class="verification-badge verification-unverified">⏳ Pending</span>
+                {% endif %}
+              </td>
+              <td>
+                <a href="#" class="btn btn-view">👁️ View</a>
+                {% if not h.is_verified %}
+                  <form method="POST" action="{{ url_for('approve_hospital', user_id=h.id) }}" style="display: inline;">
+                    <button type="submit" class="btn btn-approve" onclick="return confirm('Approve this hospital?')">
+                      ✅ Approve
+                    </button>
+                  </form>
+                {% endif %}
+                <form method="POST" action="{{ url_for('reject_hospital', user_id=h.id) }}" style="display: inline;">
+                  <button type="submit" class="btn btn-delete" onclick="return confirm('Delete this hospital permanently?')">
+                    🗑️ Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="6">
+              <div class="empty-state">
+                  <div class="empty-state-icon">✅</div>
+                  <p class="empty-state-text">No New Requests</p>
+                  <p class="empty-state-subtext">There are no new hospital registration requests at this time</p>
+                </div>
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Patients Section -->
+  <div class="section" id="section-patients">
+    <div class="section-header">
+      <h3>🧑‍⚕️ Registered Patients</h3>
+      <div class="section-header-actions">
+        <span class="section-badge">{{ patients|length }} Patients</span>
+      </div>
+    </div>
+
+    <div class="search-container">
+      <input type="text" class="search-bar" placeholder="🔍 Search patients by name, email, or contact..." id="searchPatients">
+      <button class="search-btn" onclick="searchTable('searchPatients', 'patientsTable')">Search</button>
+    </div>
+
+    <div class="table-wrapper">
+      <table id="patientsTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Patient Name</th>
+            <th>Email Address</th>
+            <th>Contact Number</th>
+            <th>Blood Group</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if patients %}
+            {% for p in patients %}
+            <tr>
+              <td>{{ p.id }}</td>
+              <td>{{ p.username }}</td>
+              <td>{{ p.email }}</td>
+              <td>{{ p.contact }}</td>
+              <td>
+                {% if p.blood_group %}
+                  <span class="blood-group-badge">{{ p.blood_group }}</span>
+                {% else %}
+                  <span style="color: #a0aec0;">N/A</span>
+                {% endif %}
+              </td>
+              <td>
+                <a href="#" class="btn btn-view">👁️ View Profile</a>
+                <form method="POST" action="{{ url_for('delete_patient', patient_id=p.id) }}" style="display: inline;">
+                  <button type="submit" class="btn btn-delete" onclick="return confirm('Delete this patient permanently?')">
+                    🗑️ Delete
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="6">
+                <div class="empty-state">
+                  <div class="empty-state-icon">🧑‍⚕️</div>
+                  <p class="empty-state-text">No Patients Registered</p>
+                  <p class="empty-state-subtext">Patients will appear here once registered</p>
+                </div>
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Update current time
+  function updateTime() {
+    const now = new Date();
+    const options = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    };
+    document.getElementById('currentTime').textContent = '🕒 ' + now.toLocaleDateString('en-US', options);
+  }
+
+  updateTime();
+  setInterval(updateTime, 1000);
+
+  // Tab switching functionality
+  function showTab(tabName) {
+    // Hide all sections
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => {
+      section.classList.remove('active');
+    });
+
+    // Remove active class from all tabs
+    const tabs = document.querySelectorAll('.tab-btn');
+    tabs.forEach(tab => {
+      tab.classList.remove('active');
+    });
+
+    // Show selected section
+    const selectedSection = document.getElementById('section-' + tabName);
+    if (selectedSection) {
+      selectedSection.classList.add('active');
+    }
+
+    // Add active class to selected tab
+    const selectedTab = document.getElementById('tab-' + tabName);
+    if (selectedTab) {
+      selectedTab.classList.add('active');
+    }
+  }
+
+  // Search functionality
+  function searchTable(inputId, tableId) {
+    const input = document.getElementById(inputId);
+    const filter = input.value.toUpperCase();
+    const table = document.getElementById(tableId);
+    const tr = table.getElementsByTagName('tr');
+
+    for (let i = 1; i < tr.length; i++) {
+      let found = false;
+      const td = tr[i].getElementsByTagName('td');
+
+      for (let j = 0; j < td.length; j++) {
+        if (td[j]) {
+          const txtValue = td[j].textContent || td[j].innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            found = true;
+            break;
+          }
+        }
+      }
+
+      tr[i].style.display = found ? '' : 'none';
+    }
+  }
+
+  // Real-time search on input
+  document.addEventListener('DOMContentLoaded', function() {
+    const searchInputs = document.querySelectorAll('.search-bar');
+    searchInputs.forEach(input => {
+      input.addEventListener('keyup', function() {
+        const tableId = this.id.replace('search', '').charAt(0).toLowerCase() +
+                       this.id.replace('search', '').slice(1) + 'Table';
+        searchTable(this.id, tableId);
+      });
+    });
+  });
+
+  // Filter hospitals by verification status
+  function filterHospitals(status) {
+    const rows = document.querySelectorAll('.hospital-row');
+    rows.forEach(row => {
+      const isVerified = row.getAttribute('data-verified') === 'True';
+
+      if (status === 'all') {
+        row.style.display = '';
+      } else if (status === 'verified' && isVerified) {
+        row.style.display = '';
+      } else if (status === 'unverified' && !isVerified) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+
+  // Initialize - show pending approvals tab first
+  document.addEventListener('DOMContentLoaded', function() {
+    showTab('pending');
+  });
+</script>
+{% endblock %}🔍 Search hospitals by name, email, or contact..." id="searchPending">
+      <button class="search-btn" onclick="searchTable('searchPending', 'pendingTable')">Search</button>
+    </div>
+
+    <div class="table-wrapper">
+      <table id="pendingTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Hospital Name</th>
+            <th>Email Address</th>
+            <th>Contact Number</th>
+            <th>Registration Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set unverified_hospitals = hospitals|selectattr('is_verified', 'equalto', False)|list %}
+          {% if unverified_hospitals %}
+            {% for h in unverified_hospitals %}
+            <tr>
+              <td>{{ h.id }}</td>
+              <td>{{ h.username }}</td>
+              <td>{{ h.email }}</td>
+              <td>{{ h.contact }}</td>
+              <td>{{ h.created_at.strftime('%Y-%m-%d') if h.created_at else 'N/A' }}</td>
+              <td>
+                <span class="verification-badge verification-unverified">⏳ Pending</span>
+              </td>
+              <td>
+                <form method="POST" action="{{ url_for('approve_hospital', user_id=h.id) }}" style="display: inline;">
+                  <button type="submit" class="btn btn-approve" onclick="return confirm('Approve this hospital registration?')">
+                    ✅ Approve
+                  </button>
+                </form>
+                <form method="POST" action="{{ url_for('reject_hospital', user_id=h.id) }}" style="display: inline;">
+                  <button type="submit" class="btn btn-reject" onclick="return confirm('Reject this hospital registration?')">
+                    ❌ Reject
+                  </button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="7">
+                <div class="empty-state">
+                  <div class="empty-state-icon">✅</div>
+                  <p class="empty-state-text">No Pending Approvals</p>
+                  <p class="empty-state-subtext">All hospital registrations have been processed</p>
+                </div>
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Hospitals Section -->
+  <div class="section" id="section-hospitals">
+    <div class="section-header">
+      <h3>🏥 All Registered Hospitals</h3>
+      <div class="section-header-actions">
+        <select class="filter-dropdown" onchange="filterHospitals(this.value)">
+          <option value="all">All Hospitals</option>
+          <option value="verified">Verified Only</option>
+          <option value="unverified">Unverified Only</option>
+        </select>
+        <span class="section-badge">{{ hospitals|length }} Total</span>
+      </div>
+    </div>
+
+    <div class="search-container">
+      <input type="text" class="search-bar" placeholder="

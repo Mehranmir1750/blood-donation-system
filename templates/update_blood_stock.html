@@ -1,0 +1,379 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+:root {
+    --red:       #c0392b;
+    --red-dark:  #922b21;
+    --red-light: #f9ebea;
+    --red-glow:  rgba(192,57,43,0.18);
+    --ink:       #1a0a08;
+    --ink-mid:   #4a1c17;
+    --muted:     #8b6b68;
+    --cream:     #fdf8f7;
+    --border:    rgba(192,57,43,0.12);
+    --white:     #ffffff;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ── NAVBAR ── */
+.navbar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 64px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+}
+
+.nav-logo .drop {
+    width: 28px; height: 28px;
+    background: var(--red);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    animation: pulse 2.5s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: rotate(-45deg) scale(1); }
+    50%       { transform: rotate(-45deg) scale(1.1); }
+}
+
+.nav-logo span {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.nav-logo span em { color: var(--red); font-style: normal; }
+
+.nav-back {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.42rem 0.9rem;
+    border-radius: 7px;
+    border: 1.5px solid var(--border);
+    transition: all 0.18s;
+}
+
+.nav-back:hover { color: var(--red); border-color: var(--red); background: var(--red-light); }
+
+/* ── PAGE ── */
+.page-wrapper {
+    padding-top: 64px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 3rem;
+}
+
+.form-box {
+    width: 100%;
+    max-width: 480px;
+    margin: 3rem 2rem;
+}
+
+/* back link */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.4rem 0.85rem;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    transition: all 0.18s;
+    margin-bottom: 1.75rem;
+}
+
+.back-link:hover { color: var(--red); border-color: var(--red); background: var(--red-light); }
+
+/* header */
+.form-header { margin-bottom: 1.75rem; }
+
+.form-header .form-icon {
+    width: 52px; height: 52px;
+    background: var(--red-light);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1.1rem;
+    border: 1px solid var(--border);
+}
+
+.form-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+    margin-bottom: 0.35rem;
+}
+
+.form-header h2 em { color: var(--red); font-style: normal; }
+
+.form-header p {
+    font-size: 0.875rem;
+    color: var(--muted);
+}
+
+/* current stock pill */
+.current-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--red-light);
+    border: 1px solid rgba(192,57,43,0.2);
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    margin-bottom: 1.75rem;
+    font-size: 0.82rem;
+    color: var(--ink-mid);
+    font-weight: 500;
+    width: 100%;
+}
+
+.current-pill .pill-label { color: var(--muted); }
+.current-pill .pill-bg {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--red);
+}
+.current-pill .pill-units {
+    font-weight: 700;
+    color: var(--ink);
+    margin-left: auto;
+}
+
+/* form card */
+.form-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 2rem;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--ink-mid);
+}
+
+.input-wrap { position: relative; }
+
+.input-wrap .i-icon {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem;
+    pointer-events: none;
+    color: var(--muted);
+}
+
+.input-wrap input,
+.input-wrap select {
+    width: 100%;
+    padding: 0.75rem 0.9rem 0.75rem 2.4rem;
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--ink);
+    outline: none;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.input-wrap input:focus,
+.input-wrap select:focus {
+    border-color: var(--red);
+    background: var(--white);
+    box-shadow: 0 0 0 3px var(--red-glow);
+}
+
+.input-wrap select {
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23c0392b' d='M5 7L1 3h8z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    padding-right: 2.2rem;
+}
+
+/* buttons */
+.btn-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.btn-submit {
+    flex: 1;
+    padding: 0.85rem;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px var(--red-glow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-submit:hover {
+    background: var(--red-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 28px rgba(192,57,43,0.3);
+}
+
+.btn-cancel {
+    padding: 0.85rem 1.25rem;
+    background: transparent;
+    color: var(--muted);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    transition: all 0.18s;
+}
+
+.btn-cancel:hover { color: var(--red); border-color: var(--red); background: var(--red-light); }
+
+@media (max-width: 480px) {
+    .navbar { padding: 0 1.25rem; }
+    .form-box { margin: 2rem 1.25rem; }
+    .btn-row { flex-direction: column; }
+}
+
+</style>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a href="{{ url_for('home') }}" class="nav-logo">
+        <div class="drop"></div>
+        <span>Blood<em>Bridge</em></span>
+    </a>
+    <a href="{{ url_for('view_hospital') }}" class="nav-back">← Back to Blood Stock</a>
+</nav>
+
+<!-- PAGE -->
+<div class="page-wrapper">
+    <div class="form-box">
+
+        <a href="{{ url_for('view_hospital') }}" class="back-link">← Back to Blood Stock</a>
+
+        <div class="form-header">
+            <div class="form-icon">✏️</div>
+            <h2>Update Blood <em>Stock</em></h2>
+            <p>Update the blood group or available units for this entry.</p>
+        </div>
+
+        <!-- Current values pill -->
+        <div class="current-pill">
+            <span class="pill-label">Current:</span>
+            <span class="pill-bg">{{ stock.blood_group }}</span>
+            <span class="pill-units">{{ stock.units_available }} unit{{ 's' if stock.units_available != 1 }} available</span>
+        </div>
+
+        <div class="form-card">
+            <form method="POST">
+
+                <div class="form-group">
+                    <label for="blood_group">Blood Group</label>
+                    <div class="input-wrap">
+                        <span class="i-icon">🩸</span>
+                        <select name="blood_group" id="blood_group" required>
+                            <option value="A+"  {% if stock.blood_group == 'A+'  %}selected{% endif %}>A+  (A Positive)</option>
+                            <option value="A-"  {% if stock.blood_group == 'A-'  %}selected{% endif %}>A−  (A Negative)</option>
+                            <option value="B+"  {% if stock.blood_group == 'B+'  %}selected{% endif %}>B+  (B Positive)</option>
+                            <option value="B-"  {% if stock.blood_group == 'B-'  %}selected{% endif %}>B−  (B Negative)</option>
+                            <option value="AB+" {% if stock.blood_group == 'AB+' %}selected{% endif %}>AB+ (AB Positive)</option>
+                            <option value="AB-" {% if stock.blood_group == 'AB-' %}selected{% endif %}>AB− (AB Negative)</option>
+                            <option value="O+"  {% if stock.blood_group == 'O+'  %}selected{% endif %}>O+  (O Positive)</option>
+                            <option value="O-"  {% if stock.blood_group == 'O-'  %}selected{% endif %}>O−  (O Negative)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="units_available">Units Available</label>
+                    <div class="input-wrap">
+                        <span class="i-icon">💉</span>
+                        <input type="number" name="units_available" id="units_available"
+                               value="{{ stock.units_available }}" min="1" required
+                               placeholder="Enter number of units">
+                    </div>
+                </div>
+
+                <div class="btn-row">
+                    <button type="submit" class="btn-submit">💾 Update Stock</button>
+                    <a href="{{ url_for('view_hospital') }}" class="btn-cancel">Cancel</a>
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

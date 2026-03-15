@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login - Blood Bank System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #e63946, #9b2226);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 50px 40px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      color: white;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.2);
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      font-weight: 600;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+    p {
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      text-align: left;
+      margin-bottom: 22px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 15px;
+      border-radius: 10px;
+      border: none;
+      outline: none;
+      font-size: 15px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+      font-family: 'Poppins', sans-serif;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      background: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: #ff5a5f;
+      color: white;
+      font-weight: 600;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 15px;
+      box-shadow: 0 6px 20px rgba(255, 90, 95, 0.4);
+    }
+
+    button:hover {
+      background: #ff7f7f;
+      transform: translateY(-3px);
+    }
+
+    .footer-links {
+      margin-top: 25px;
+      font-size: 14px;
+    }
+    .footer-links a {
+      color: #fff;
+      text-decoration: underline;
+      transition: 0.3s;
+    }
+    .footer-links a:hover { color: #ffe0e0; }
+
+    .flash {
+      background: rgba(255,255,255,0.2);
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      color: #fff;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <h2>Admin Login</h2>
+    <p>Access the Blood Bank Management Dashboard</p>
+
+<!--    &lt;!&ndash; Display flash messages &ndash;&gt;-->
+<!--    {% with messages = get_flashed_messages() %}-->
+<!--      {% if messages %}-->
+<!--        {% for msg in messages %}-->
+<!--          <div class="flash">{{ msg }}</div>-->
+<!--        {% endfor %}-->
+<!--      {% endif %}-->
+<!--    {% endwith %}-->
+
+    <!-- Admin Login Form -->
+    <form method="POST" action="{{ url_for('admin_login') }}">
+      {{ form.hidden_tag() }}
+
+      <div class="form-group">
+        <label for="email">{{ form.email.label }}</label>
+        {{ form.email(placeholder="Enter your admin email") }}
+      </div>
+
+      <div class="form-group">
+        <label for="password">{{ form.password.label }}</label>
+        {{ form.password(placeholder="Enter password") }}
+      </div>
+
+      {{ form.submit(class_="btn-login") }}
+    </form>
+
+    <div class="footer-links">
+      <a href="/">← Back to Home</a>
+    </div>
+  </div>
+
+</body>
+</html>

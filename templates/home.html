@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloodBridge — Donate. Save. Live.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+
+:root {
+    --red:        #c0392b;
+    --red-dark:   #922b21;
+    --red-light:  #f9ebea;
+    --red-glow:   rgba(192, 57, 43, 0.18);
+    --ink:        #1a0a08;
+    --ink-mid:    #4a1c17;
+    --muted:      #8b6b68;
+    --cream:      #fdf8f7;
+    --white:      #ffffff;
+    --border:     rgba(192,57,43,0.12);
+    --shadow:     0 8px 40px rgba(192,57,43,0.12);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* ── NAVBAR ── */
+.navbar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    z-index: 1000;
+    height: 68px;
+    background: rgba(253,248,247,0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 3rem;
+    transition: box-shadow 0.3s;
+}
+
+.navbar.scrolled { box-shadow: 0 4px 24px var(--red-glow); }
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+}
+
+.nav-logo .drop {
+    width: 32px; height: 32px;
+    background: var(--red);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    box-shadow: 0 4px 12px var(--red-glow);
+    flex-shrink: 0;
+    animation: pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: rotate(-45deg) scale(1); box-shadow: 0 4px 12px var(--red-glow); }
+    50%       { transform: rotate(-45deg) scale(1.08); box-shadow: 0 6px 20px rgba(192,57,43,0.35); }
+}
+
+.nav-logo span {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+}
+
+.nav-logo span em { color: var(--red); font-style: normal; }
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.nav-links a {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.45rem 0.9rem;
+    border-radius: 8px;
+    transition: all 0.18s;
+}
+
+.nav-links a:hover { color: var(--red); background: var(--red-light); }
+
+.nav-auth {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.btn-nav-reg {
+    background: var(--red);
+    color: #fff;
+    padding: 0.48rem 1.1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 3px 12px var(--red-glow);
+}
+
+.btn-nav-reg:hover { background: var(--red-dark); transform: translateY(-1px); }
+
+/* dropdown */
+.dropdown { position: relative; }
+
+.btn-nav-login {
+    background: transparent;
+    color: var(--ink-mid);
+    border: 1.5px solid var(--border);
+    padding: 0.45rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.btn-nav-login:hover { border-color: var(--red); color: var(--red); }
+
+.btn-nav-login .arrow {
+    font-size: 0.65rem;
+    transition: transform 0.2s;
+}
+
+.dropdown.open .arrow { transform: rotate(180deg); }
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.5rem;
+    min-width: 200px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+    z-index: 100;
+}
+
+.dropdown.open .dropdown-menu { display: block; animation: dropIn 0.18s ease; }
+
+@keyframes dropIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ink-mid);
+    text-decoration: none;
+    transition: all 0.15s;
+}
+
+.dropdown-menu a:hover { background: var(--red-light); color: var(--red); }
+
+.dropdown-menu a .icon {
+    width: 28px; height: 28px;
+    background: var(--red-light);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+/* hamburger */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    margin-left: auto;
+}
+
+.hamburger span {
+    display: block;
+    width: 22px; height: 2px;
+    background: var(--ink);
+    border-radius: 2px;
+    transition: all 0.25s;
+}
+
+.hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+.mobile-nav {
+    display: none;
+    position: fixed;
+    top: 68px; left: 0; right: 0;
+    z-index: 999;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 1.5rem 1.5rem;
+    flex-direction: column;
+    gap: 0.35rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.mobile-nav.open { display: flex; }
+
+.mobile-nav a {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--ink-mid);
+    text-decoration: none;
+    padding: 0.65rem 0.5rem;
+    border-bottom: 1px solid #f5eeee;
+    transition: color 0.18s;
+}
+
+.mobile-nav a:hover { color: var(--red); }
+.mobile-nav hr { border: none; border-top: 1px solid var(--border); margin: 0.35rem 0; }
+
+.mobile-nav .mobile-btn {
+    display: block;
+    text-align: center;
+    padding: 0.65rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 0.25rem;
+    border-bottom: none;
+}
+
+.mobile-nav .mobile-btn.reg { background: var(--red); color: #fff; }
+.mobile-nav .mobile-btn.log { border: 1.5px solid var(--border); color: var(--ink-mid); }
+
+/* ── HERO ── */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 100px 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    right: -160px; top: 50%;
+    transform: translateY(-50%);
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(192,57,43,0.07) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(192,57,43,0.06) 1px, transparent 1px);
+    background-size: 36px 36px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 4rem;
+    position: relative;
+    z-index: 1;
+}
+
+.hero-text { animation: fadeUp 0.9s ease both; }
+
+.hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--red-light);
+    color: var(--red);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    border: 1px solid rgba(192,57,43,0.15);
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+}
+
+.hero-tag .dot {
+    width: 6px; height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: blink 1.4s ease-in-out infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+}
+
+.hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 5vw, 4.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    color: var(--ink);
+    letter-spacing: -1.5px;
+    margin-bottom: 1.5rem;
+}
+
+.hero-title .accent { color: var(--red); }
+
+.hero-desc {
+    font-size: 1.05rem;
+    color: var(--muted);
+    line-height: 1.8;
+    max-width: 480px;
+    margin-bottom: 2.5rem;
+    font-weight: 400;
+}
+
+.hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    background: var(--red);
+    color: #fff;
+    padding: 0.85rem 2rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 6px 24px var(--red-glow);
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-primary:hover { background: var(--red-dark); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(192,57,43,0.3); }
+
+.btn-secondary {
+    background: transparent;
+    color: var(--ink-mid);
+    padding: 0.85rem 1.5rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1.5px solid var(--border);
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover { border-color: var(--red); color: var(--red); background: var(--red-light); }
+
+.hero-stats {
+    display: flex;
+    gap: 2rem;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+}
+
+.stat-item { display: flex; flex-direction: column; gap: 0.2rem; }
+
+.stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--red);
+    line-height: 1;
+}
+
+.stat-label { font-size: 0.78rem; color: var(--muted); font-weight: 500; }
+
+/* hero visual */
+.hero-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeUp 0.9s 0.2s ease both;
+}
+
+.blood-drop-visual {
+    position: relative;
+    width: 320px; height: 420px;
+}
+
+.big-drop {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -55%) rotate(-45deg);
+    width: 220px; height: 220px;
+    background: linear-gradient(135deg, var(--red), #e74c3c);
+    border-radius: 50% 50% 50% 0;
+    box-shadow: 0 20px 60px rgba(192,57,43,0.3);
+    animation: floatDrop 4s ease-in-out infinite;
+}
+
+@keyframes floatDrop {
+    0%, 100% { transform: translate(-50%, -55%) rotate(-45deg); }
+    50%       { transform: translate(-50%, -62%) rotate(-45deg); }
+}
+
+.big-drop::after {
+    content: '🩸';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    font-size: 3.5rem;
+}
+
+.orbit-ring {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 310px; height: 310px;
+    border: 1.5px dashed rgba(192,57,43,0.2);
+    border-radius: 50%;
+    animation: spin 18s linear infinite;
+}
+
+@keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+.orbit-dot {
+    position: absolute;
+    width: 36px; height: 36px;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+
+.orbit-dot:nth-child(2) { top: -18px; left: 50%; transform: translateX(-50%); }
+.orbit-dot:nth-child(3) { top: 50%; right: -18px; transform: translateY(-50%); }
+.orbit-dot:nth-child(4) { bottom: -18px; left: 50%; transform: translateX(-50%); }
+.orbit-dot:nth-child(5) { top: 50%; left: -18px; transform: translateY(-50%); }
+
+.float-card {
+    position: absolute;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink-mid);
+    white-space: nowrap;
+    animation: floatCard 3.5s ease-in-out infinite;
+}
+
+.float-card.fc1 { top: 20px; left: -30px; animation-delay: 0s; }
+.float-card.fc2 { bottom: 30px; right: -20px; animation-delay: 1.2s; }
+.float-card.fc3 { bottom: 100px; left: -40px; animation-delay: 0.6s; }
+
+@keyframes floatCard {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-8px); }
+}
+
+.float-card .fc-icon { margin-right: 0.35rem; }
+.float-card .fc-sub { font-size: 0.68rem; color: var(--muted); font-weight: 400; display: block; margin-top: 1px; }
+
+/* ── SECTIONS ── */
+.section { padding: 6rem 3rem; }
+
+.section-inner { max-width: 1200px; margin: 0 auto; }
+
+.section-label {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--red);
+    margin-bottom: 0.75rem;
+}
+
+.section-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+.section-sub {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.75;
+}
+
+/* ── STATS BAR ── */
+.stats-bar { background: var(--red); padding: 2.5rem 3rem; }
+
+.stats-bar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    text-align: center;
+}
+
+.sbar-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+}
+
+.sbar-label { font-size: 0.82rem; color: rgba(255,255,255,0.7); font-weight: 500; }
+
+/* ── HOW IT WORKS ── */
+.how-section { background: #fff; }
+
+.how-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+}
+
+.how-card {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 2.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.how-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--red-light), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.how-card:hover { transform: translateY(-6px); box-shadow: var(--shadow); border-color: rgba(192,57,43,0.25); }
+.how-card:hover::before { opacity: 1; }
+
+.how-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 900;
+    color: rgba(192,57,43,0.08);
+    line-height: 1;
+    margin-bottom: 1.25rem;
+    position: relative; z-index: 1;
+}
+
+.how-icon { font-size: 1.8rem; margin-bottom: 1rem; position: relative; z-index: 1; }
+
+.how-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.6rem;
+    position: relative; z-index: 1;
+}
+
+.how-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.7; position: relative; z-index: 1; }
+
+/* ── GET STARTED ── */
+.start-section { background: var(--cream); }
+
+.start-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+}
+
+.start-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.start-card:hover { transform: translateY(-8px); box-shadow: var(--shadow); border-color: rgba(192,57,43,0.3); }
+
+.start-card .card-icon {
+    width: 72px; height: 72px;
+    background: var(--red-light);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s;
+}
+
+.start-card:hover .card-icon { background: var(--red); transform: scale(1.08); }
+
+.start-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.start-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.7; flex: 1; }
+
+.btn-card {
+    display: inline-block;
+    background: var(--red);
+    color: #fff;
+    padding: 0.7rem 1.75rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+    margin-top: 0.5rem;
+    box-shadow: 0 4px 16px var(--red-glow);
+}
+
+.btn-card:hover { background: var(--red-dark); transform: translateY(-2px); }
+
+/* ── QUOTES ── */
+.quote-section { background: var(--ink); padding: 6rem 3rem; }
+.quote-inner { max-width: 900px; margin: 0 auto; }
+
+.quote-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-top: 3rem;
+}
+
+.quote-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 2rem;
+    position: relative;
+}
+
+.quote-card::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 5rem;
+    line-height: 1;
+    color: var(--red);
+    opacity: 0.3;
+    position: absolute;
+    top: 0.5rem; left: 1.25rem;
+}
+
+.quote-text {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.85);
+    font-style: italic;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+    padding-top: 1.5rem;
+}
+
+.quote-source { font-size: 0.8rem; color: var(--red); font-weight: 600; font-style: normal; }
+.quote-section .section-label { color: rgba(192,57,43,0.8); }
+.quote-section .section-heading { color: #fff; }
+
+/* ── ABOUT ── */
+.about-section { background: #fff; }
+
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+}
+
+.about-card {
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 2rem;
+    transition: all 0.3s;
+}
+
+.about-card:hover { border-color: rgba(192,57,43,0.3); box-shadow: var(--shadow); transform: translateY(-4px); }
+
+.about-card-icon {
+    width: 48px; height: 48px;
+    background: var(--red-light);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 1.25rem;
+}
+
+.about-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.65rem;
+}
+
+.about-card p { font-size: 0.875rem; color: var(--muted); line-height: 1.75; }
+
+/* ── CTA ── */
+.cta-section {
+    background: linear-gradient(135deg, var(--red), var(--red-dark));
+    padding: 5rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+}
+
+.cta-inner { position: relative; z-index: 1; }
+
+.cta-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
+}
+
+.cta-section p {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.8);
+    margin-bottom: 2.5rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.btn-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #fff;
+    color: var(--red);
+    padding: 0.95rem 2.25rem;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    transition: all 0.2s;
+}
+
+.btn-cta:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.2); }
+
+/* ── FOOTER ── */
+footer { background: var(--ink); padding: 3rem; text-align: center; }
+footer p { font-size: 0.82rem; color: rgba(255,255,255,0.35); }
+footer span { color: var(--red); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+    .hero-inner     { grid-template-columns: 1fr; text-align: center; }
+    .hero-visual    { display: none; }
+    .hero-actions   { justify-content: center; }
+    .hero-stats     { justify-content: center; }
+    .hero-desc      { margin-left: auto; margin-right: auto; }
+    .how-grid       { grid-template-columns: 1fr; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .start-grid     { grid-template-columns: 1fr; max-width: 400px; margin-left: auto; margin-right: auto; }
+    .about-grid     { grid-template-columns: 1fr; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .quote-grid     { grid-template-columns: 1fr; }
+    .stats-bar-inner { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+}
+
+@media (max-width: 640px) {
+    .navbar          { padding: 0 1.25rem; }
+    .nav-links       { display: none; }
+    .nav-auth        { display: none; }
+    .hamburger       { display: flex; }
+    .hero            { padding: 90px 1.5rem 3rem; }
+    .section         { padding: 4rem 1.5rem; }
+    .stats-bar       { padding: 2rem 1.5rem; }
+    .stats-bar-inner { grid-template-columns: repeat(2, 1fr); }
+    .hero-stats      { flex-wrap: wrap; gap: 1.25rem; }
+    .quote-section   { padding: 4rem 1.5rem; }
+    .cta-section     { padding: 4rem 1.5rem; }
+    footer           { padding: 2rem 1.5rem; }
+}
+
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+    <a href="{{ url_for('home') }}" class="nav-logo">
+        <div class="drop"></div>
+        <span>Blood<em>Bridge</em></span>
+    </a>
+
+    <div class="nav-links">
+        <a href="#how">How It Works</a>
+        <a href="#about">About</a>
+        <a href="#quotes">Our Mission</a>
+    </div>
+
+    <div class="nav-auth">
+        <a href="{{ url_for('Registration_page') }}" class="btn-nav-reg">Register</a>
+
+        <div class="dropdown" id="loginDropdown">
+            <button class="btn-nav-login" onclick="toggleDropdown()">
+                Login <span class="arrow">▾</span>
+            </button>
+            <div class="dropdown-menu">
+                <a href="{{ url_for('hospital_login') }}">
+                    <span class="icon">🏥</span> Hospital Login
+                </a>
+                <a href="{{ url_for('patient_login') }}">
+                    <span class="icon">🧑‍⚕️</span> Patient Login
+                </a>
+                <a href="{{ url_for('admin_login') }}">
+                    <span class="icon">🔐</span> Admin Login
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+        <span></span><span></span><span></span>
+    </button>
+</nav>
+
+<!-- Mobile Nav -->
+<div class="mobile-nav" id="mobileNav">
+    <a href="#how">How It Works</a>
+    <a href="#about">About</a>
+    <a href="#quotes">Our Mission</a>
+    <hr>
+    <a href="{{ url_for('hospital_login') }}"   class="mobile-btn log">🏥 Hospital Login</a>
+    <a href="{{ url_for('patient_login') }}"    class="mobile-btn log">🧑‍⚕️ Patient Login</a>
+    <a href="{{ url_for('admin_login') }}"      class="mobile-btn log">🔐 Admin Login</a>
+    <a href="{{ url_for('Registration_page') }}" class="mobile-btn reg">Register Now</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-inner">
+
+        <div class="hero-text">
+            <div class="hero-tag">
+                <span class="dot"></span>
+                Life-Saving Platform
+            </div>
+
+            <h1 class="hero-title">
+                Every Drop<br>
+                <span class="accent">Saves</span> a Life.
+            </h1>
+
+            <p class="hero-desc">
+                Connecting hospitals, patients, and donors across Kashmir.
+                A single donation can save up to three lives — join our
+                community and make a difference today.
+            </p>
+
+            <div class="hero-actions">
+                <a href="{{ url_for('Registration_page') }}" class="btn-primary">🩸 Donate Blood</a>
+                <a href="#how" class="btn-secondary">Learn More →</a>
+            </div>
+
+            <div class="hero-stats">
+<!--                <div class="stat-item">-->
+<!--                    <span class="stat-num" data-target="1200">0</span>-->
+<!--                    <span class="stat-label">Active Donors</span>-->
+<!--                </div>-->
+<!--                <div class="stat-item">-->
+<!--                    <span class="stat-num" data-target="340">0</span>-->
+<!--                    <span class="stat-label">Lives Saved</span>-->
+<!--                </div>-->
+<!--                <div class="stat-item">-->
+<!--                    <span class="stat-num" data-target="24">0</span>-->
+<!--                    <span class="stat-label">Partner Hospitals</span>-->
+<!--                </div>-->
+            </div>
+        </div>
+
+        <div class="hero-visual">
+            <div class="blood-drop-visual">
+                <div class="orbit-ring">
+                    <div class="orbit-dot">🏥</div>
+                    <div class="orbit-dot">💉</div>
+                    <div class="orbit-dot">❤️</div>
+                    <div class="orbit-dot">🧬</div>
+                </div>
+                <div class="big-drop"></div>
+                <div class="float-card fc1">
+                    <span class="fc-icon">✅</span> Request Approved
+                    <span class="fc-sub">2 min ago</span>
+                </div>
+                <div class="float-card fc2">
+                    <span class="fc-icon">🩸</span> Donor Found
+                    <span class="fc-sub">Blood type O+</span>
+                </div>
+                <div class="float-card fc3">
+                    <span class="fc-icon">🏥</span> Hospital Connected
+                    <span class="fc-sub">SKIMS, Srinagar</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar reveal">
+    <div class="stats-bar-inner">
+        <div class="sbar-item">
+            <div class="sbar-num">8+</div>
+            <div class="sbar-label">Blood Types Managed</div>
+        </div>
+        <div class="sbar-item">
+            <div class="sbar-num">24/7</div>
+            <div class="sbar-label">Emergency Support</div>
+        </div>
+        <div class="sbar-item">
+            <div class="sbar-num">98%</div>
+            <div class="sbar-label">Request Fulfillment</div>
+        </div>
+        <div class="sbar-item">
+            <div class="sbar-num">3 min</div>
+            <div class="sbar-label">Average Response Time</div>
+        </div>
+    </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section how-section reveal" id="how">
+    <div class="section-inner">
+        <span class="section-label">The Process</span>
+        <h2 class="section-heading">How BloodBridge Works</h2>
+        <p class="section-sub">Simple steps to connect donors with patients who need blood urgently.</p>
+
+        <div class="how-grid">
+            <div class="how-card reveal">
+                <div class="how-num">01</div>
+                <div class="how-icon">📝</div>
+                <h3>Register Your Profile</h3>
+                <p>Create your account as a hospital, patient, or donor. Verify your details and blood type to get started instantly.</p>
+            </div>
+            <div class="how-card reveal">
+                <div class="how-num">02</div>
+                <div class="how-icon">🔍</div>
+                <h3>Search And Match</h3>
+                <p>Our smart system matches blood requests with available donors nearby. Real-time inventory tracking ensures accuracy.</p>
+            </div>
+            <div class="how-card reveal">
+                <div class="how-num">03</div>
+                <div class="how-icon">🤝</div>
+                <h3>Connect And Save</h3>
+                <p>Hospitals and donors connect securely through our platform. Coordinate pickup or drop-off and save a life today.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- GET STARTED -->
+<section class="section start-section reveal">
+    <div class="section-inner">
+        <span class="section-label">Get Started</span>
+        <h2 class="section-heading">Choose Your Role</h2>
+        <p class="section-sub">Whether you're a hospital managing inventory or a patient in need — we have you covered.</p>
+
+        <div class="start-grid">
+            <div class="start-card reveal">
+                <div class="card-icon">🏥</div>
+                <h3>Hospital</h3>
+                <p>Manage blood stock, post urgent requests, and connect with verified donors in your area.</p>
+                <a href="{{ url_for('hospital_login') }}" class="btn-card">Hospital Login</a>
+            </div>
+            <div class="start-card reveal">
+                <div class="card-icon">🧑‍⚕️</div>
+                <h3>Patient</h3>
+                <p>Request blood, track your status, and get notified when a match is found near you.</p>
+                <a href="{{ url_for('patient_login') }}" class="btn-card">Patient Login</a>
+            </div>
+            <div class="start-card reveal">
+                <div class="card-icon">🩸</div>
+                <h3>Donor</h3>
+                <p>Join thousands of life-savers. Register your blood type and help patients in critical need.</p>
+                <a href="{{ url_for('Registration_page') }}" class="btn-card">Become a Donor</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section about-section reveal" id="about">
+    <div class="section-inner">
+        <span class="section-label">Why It Matters</span>
+        <h2 class="section-heading">About Blood Donation</h2>
+        <p class="section-sub">Understanding the importance of what you give.</p>
+
+        <div class="about-grid">
+            <div class="about-card reveal">
+                <div class="about-card-icon">💉</div>
+                <h3>Why Donate Blood?</h3>
+                <p>Every donation can save up to three lives. Your contribution helps patients undergoing surgery, cancer treatment, and those with blood disorders.</p>
+            </div>
+            <div class="about-card reveal">
+                <div class="about-card-icon">🏥</div>
+                <h3>How It Helps Hospitals</h3>
+                <p>Hospitals can manage their blood inventory in real time, reduce shortages, and respond to emergencies faster than ever before.</p>
+            </div>
+            <div class="about-card reveal">
+                <div class="about-card-icon">❤️</div>
+                <h3>Save Lives Today</h3>
+                <p>Join thousands of donors who have already made a difference. Register now and become a hero in someone else's story.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- QUOTES -->
+<section class="quote-section reveal" id="quotes">
+    <div class="quote-inner section-inner">
+        <span class="section-label">Our Mission</span>
+        <h2 class="section-heading">Guided by Purpose</h2>
+
+        <div class="quote-grid">
+            <div class="quote-card reveal">
+                <p class="quote-text">"Whoever saves a life, it will be as if they saved all of humanity."</p>
+                <span class="quote-source">— Surah Al-Ma'idah (5:32)</span>
+            </div>
+            <div class="quote-card reveal">
+                <p class="quote-text">"The best of people are those who are most beneficial to others."</p>
+                <span class="quote-source">— Prophet Muhammad ﷺ (Sahih Al-Jami)</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section reveal">
+    <div class="cta-inner">
+        <h2>Ready to Save a Life?</h2>
+        <p>Join BloodBridge today and be part of a community that puts humanity first.</p>
+        <a href="{{ url_for('Registration_page') }}" class="btn-cta">🩸 Register as Donor</a>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>© 2025 <span>BloodBridge</span> — Designed with ❤️ for Kashmir. Every drop counts.</p>
+</footer>
+
+<script>
+    // Navbar scroll shadow
+    window.addEventListener('scroll', function () {
+        var nav = document.getElementById('navbar');
+        if (window.scrollY > 20) nav.classList.add('scrolled');
+        else nav.classList.remove('scrolled');
+    });
+
+    // Login dropdown
+    function toggleDropdown() {
+        document.getElementById('loginDropdown').classList.toggle('open');
+    }
+
+    document.addEventListener('click', function (e) {
+        var dd = document.getElementById('loginDropdown');
+        if (!dd.contains(e.target)) dd.classList.remove('open');
+    });
+
+    // Mobile nav
+    function toggleMobileNav() {
+        document.getElementById('mobileNav').classList.toggle('open');
+        document.getElementById('hamburger').classList.toggle('active');
+    }
+
+    document.addEventListener('click', function (e) {
+        var nav    = document.getElementById('mobileNav');
+        var burger = document.getElementById('hamburger');
+        if (!nav.contains(e.target) && !burger.contains(e.target)) {
+            nav.classList.remove('open');
+            burger.classList.remove('active');
+        }
+    });
+
+    // Scroll reveal
+    var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) entry.target.classList.add('visible');
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(function (el) { observer.observe(el); });
+
+    // Counter animation
+    var countObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+                var el     = entry.target;
+                var target = parseInt(el.getAttribute('data-target'));
+                var start  = 0;
+                var step   = Math.ceil(target / 60);
+                var timer  = setInterval(function () {
+                    start += step;
+                    if (start >= target) { el.textContent = target; clearInterval(timer); }
+                    else el.textContent = start;
+                }, 20);
+                countObserver.unobserve(el);
+            }
+        });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.stat-num[data-target]').forEach(function (el) { countObserver.observe(el); });
+</script>
+
+</body>
+</html>

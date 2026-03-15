@@ -1,0 +1,666 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+:root {
+    --red:       #c0392b;
+    --red-dark:  #922b21;
+    --red-light: #f9ebea;
+    --red-glow:  rgba(192,57,43,0.18);
+    --ink:       #1a0a08;
+    --ink-mid:   #4a1c17;
+    --muted:     #8b6b68;
+    --cream:     #fdf8f7;
+    --border:    rgba(192,57,43,0.12);
+    --white:     #ffffff;
+    --green:     #1e8449;
+    --green-light: #eafaf1;
+    --green-border: rgba(30,132,73,0.2);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ── NAVBAR ── */
+.navbar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 64px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+}
+
+.nav-logo .drop {
+    width: 28px; height: 28px;
+    background: var(--red);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    animation: pulse 2.5s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: rotate(-45deg) scale(1); }
+    50%       { transform: rotate(-45deg) scale(1.1); }
+}
+
+.nav-logo span {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.nav-logo span em { color: var(--red); font-style: normal; }
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.nav-link {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.42rem 0.9rem;
+    border-radius: 7px;
+    border: 1.5px solid var(--border);
+    transition: all 0.18s;
+}
+
+.nav-link:hover { color: var(--red); border-color: var(--red); background: var(--red-light); }
+
+.nav-logout {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    padding: 0.42rem 1rem;
+    border-radius: 7px;
+    background: var(--red);
+    border: 1.5px solid var(--red);
+    transition: all 0.18s;
+}
+
+.nav-logout:hover { background: var(--red-dark); border-color: var(--red-dark); }
+
+/* ── CONTAINER ── */
+.container {
+    width: 92%;
+    max-width: 1400px;
+    margin: 84px auto 60px;
+    padding: 0;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 2.2rem 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.page-header-left {}
+
+.page-header-icon {
+    width: 48px; height: 48px;
+    background: var(--red-light);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    border: 1px solid var(--border);
+    margin-bottom: 0.85rem;
+}
+
+.page-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+    margin-bottom: 0.25rem;
+}
+
+.page-header h3 em { color: var(--red); font-style: normal; }
+
+.page-header p {
+    font-size: 0.875rem;
+    color: var(--muted);
+}
+
+/* ── STATS ROW ── */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem 1.75rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 28px rgba(192,57,43,0.1);
+    border-color: rgba(192,57,43,0.25);
+}
+
+.stat-icon-wrap {
+    width: 48px; height: 48px;
+    background: var(--red-light);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.stat-info {}
+
+.stat-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    margin-bottom: 0.2rem;
+}
+
+.stat-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--red);
+    line-height: 1;
+}
+
+/* ── CONTENT CARD ── */
+.content-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 2rem;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+}
+
+/* section header */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.section-header h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.section-badge {
+    background: var(--red-light);
+    color: var(--red);
+    border: 1px solid rgba(192,57,43,0.2);
+    padding: 0.35rem 0.9rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+/* action bar */
+.action-bar {
+    display: flex;
+    gap: 0.9rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.search-bar {
+    flex: 1;
+    padding: 0.72rem 1rem 0.72rem 1rem;
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-family: inherit;
+    color: var(--ink);
+    font-weight: 500;
+    outline: none;
+    transition: all 0.2s;
+    min-width: 260px;
+}
+
+.search-bar:focus {
+    border-color: var(--red);
+    background: var(--white);
+    box-shadow: 0 0 0 3px var(--red-glow);
+}
+
+.search-bar::placeholder { color: var(--muted); font-weight: 400; }
+
+.filter-dropdown {
+    padding: 0.72rem 1rem;
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-family: inherit;
+    color: var(--ink);
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23c0392b' d='M5 7L1 3h8z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    padding-right: 2.2rem;
+}
+
+.filter-dropdown:focus {
+    border-color: var(--red);
+    background-color: var(--white);
+    box-shadow: 0 0 0 3px var(--red-glow);
+}
+
+/* ── TABLE ── */
+.table-wrapper {
+    overflow-x: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: var(--red-light);
+}
+
+th {
+    padding: 0.85rem 1rem;
+    text-align: center;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--ink-mid);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+}
+
+tbody tr:last-child { border-bottom: none; }
+
+tbody tr:hover { background: var(--red-light); }
+
+tbody td {
+    padding: 0.9rem 1rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--ink);
+    font-weight: 500;
+}
+
+tbody td:first-child {
+    font-weight: 700;
+    color: var(--muted);
+    font-size: 0.8rem;
+}
+
+tbody td:nth-child(2) {
+    font-weight: 700;
+    color: var(--ink);
+}
+
+/* status badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.status-pending  { background: #fef9e7; color: #9a7d0a; border: 1px solid rgba(154,125,10,0.2); }
+.status-approved { background: var(--green-light); color: var(--green); border: 1px solid var(--green-border); }
+.status-rejected { background: var(--red-light); color: var(--red); border: 1px solid rgba(192,57,43,0.2); }
+
+/* action buttons */
+.btn {
+    padding: 0.45rem 1rem;
+    border-radius: 7px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    font-size: 0.78rem;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0 3px;
+    font-family: inherit;
+}
+
+.btn-approve {
+    background: var(--green-light);
+    color: var(--green);
+    border: 1px solid var(--green-border);
+}
+
+.btn-approve:hover {
+    background: var(--green);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(30,132,73,0.25);
+}
+
+.btn-reject {
+    background: var(--red-light);
+    color: var(--red);
+    border: 1px solid rgba(192,57,43,0.2);
+}
+
+.btn-reject:hover {
+    background: var(--red);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(192,57,43,0.25);
+}
+
+/* empty state */
+.empty-state {
+    text-align: center;
+    padding: 5rem 2rem;
+}
+
+.empty-state-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.4; }
+
+.empty-state-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+}
+
+.empty-state-subtext {
+    font-size: 0.875rem;
+    color: var(--muted);
+    margin-bottom: 1.75rem;
+}
+
+.empty-state-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.8rem 1.75rem;
+    background: var(--red);
+    color: #fff;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px var(--red-glow);
+}
+
+.empty-state-btn:hover {
+    background: var(--red-dark);
+    transform: translateY(-2px);
+}
+
+/* scrollbar */
+.table-wrapper::-webkit-scrollbar { height: 6px; }
+.table-wrapper::-webkit-scrollbar-track { background: var(--cream); }
+.table-wrapper::-webkit-scrollbar-thumb { background: var(--red); border-radius: 10px; }
+
+/* responsive */
+@media (max-width: 768px) {
+    .navbar { padding: 0 1.25rem; }
+    .container { width: 95%; margin-top: 80px; }
+    .page-header { flex-direction: column; align-items: flex-start; padding: 1.5rem; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .content-card { padding: 1.25rem; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+    .action-bar { flex-direction: column; }
+    .search-bar { min-width: 100%; }
+    th, td { padding: 0.7rem 0.6rem; font-size: 0.78rem; }
+    .nav-links { gap: 0.4rem; }
+}
+
+</style>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a href="{{ url_for('home') }}" class="nav-logo">
+        <div class="drop"></div>
+        <span>Blood<em>Bridge</em></span>
+    </a>
+    <div class="nav-links">
+        <a href="{{ url_for('admin_dashboard') }}" class="nav-link">← Dashboard</a>
+        <a href="{{ url_for('home') }}" class="nav-logout">Logout</a>
+    </div>
+</nav>
+
+<!-- CONTAINER -->
+<div class="container">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="page-header-left">
+            <div class="page-header-icon">📝</div>
+            <h3>Hospital <em>Requests</em></h3>
+            <p>Review and approve hospital registrations to maintain system quality.</p>
+        </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon-wrap">📋</div>
+            <div class="stat-info">
+                <div class="stat-label">Total Requests</div>
+                <div class="stat-value">{{ hospitals|length }}</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrap">⏳</div>
+            <div class="stat-info">
+                <div class="stat-label">Pending Review</div>
+                <div class="stat-value">{{ hospitals|selectattr('status', 'equalto', 'Pending')|list|length }}</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrap">✅</div>
+            <div class="stat-info">
+                <div class="stat-label">Approved</div>
+                <div class="stat-value">{{ hospitals|selectattr('status', 'equalto', 'Approved')|list|length }}</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrap">❌</div>
+            <div class="stat-info">
+                <div class="stat-label">Rejected</div>
+                <div class="stat-value">{{ hospitals|selectattr('status', 'equalto', 'Rejected')|list|length }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-card">
+        <div class="section-header">
+            <h4>🏥 Hospital Requests</h4>
+            <span class="section-badge">{{ hospitals|length }} Total</span>
+        </div>
+
+        <!-- Search & Filter -->
+        <div class="action-bar">
+            <input type="text" class="search-bar" id="searchInput"
+                   placeholder="Search by name, email, contact or address…">
+            <select class="filter-dropdown" id="statusFilter" onchange="filterByStatus(this.value)">
+                <option value="all">All Status</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+            </select>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+            {% if hospitals %}
+            <table id="hospitalTable">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Hospital Name</th>
+                        <th>Email Address</th>
+                        <th>Contact Number</th>
+                        <th>Address</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for hospital in hospitals %}
+                    <tr data-status="{{ hospital.status }}">
+                        <td>{{ loop.index }}</td>
+                        <td>{{ hospital.username }}</td>
+                        <td>{{ hospital.email }}</td>
+                        <td>{{ hospital.contact }}</td>
+                        <td>{{ hospital.address }}</td>
+                        <td>
+                            {% if hospital.status == 'Pending' %}
+                                <span class="status-badge status-pending">⏳ Pending</span>
+                            {% elif hospital.status == 'Approved' %}
+                                <span class="status-badge status-approved">✅ Approved</span>
+                            {% elif hospital.status == 'Rejected' %}
+                                <span class="status-badge status-rejected">❌ Rejected</span>
+                            {% else %}
+                                <span class="status-badge status-pending">{{ hospital.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if hospital.status == 'Pending' %}
+                                <form action="{{ url_for('approve_hospital', user_id=hospital.id) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-approve"
+                                            onclick="return confirm('Approve {{ hospital.username }}?')">✓ Approve</button>
+                                </form>
+                                <form action="{{ url_for('reject_hospital', user_id=hospital.id) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-reject"
+                                            onclick="return confirm('Reject {{ hospital.username }}?')">✗ Reject</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">🏥</div>
+                <p class="empty-state-text">No Hospital Requests</p>
+                <p class="empty-state-subtext">There are no hospital registration requests at the moment.</p>
+                <a href="{{ url_for('admin_dashboard') }}" class="empty-state-btn">← Back to Dashboard</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+</div>
+
+<script>
+  const searchInput = document.getElementById('searchInput');
+  if (searchInput) {
+    searchInput.addEventListener('keyup', function () {
+      const filter = this.value.toUpperCase();
+      const table = document.getElementById('hospitalTable');
+      const rows = table.getElementsByTagName('tr');
+      for (let i = 1; i < rows.length; i++) {
+        let found = false;
+        const cells = rows[i].getElementsByTagName('td');
+        for (let j = 0; j < cells.length; j++) {
+          if (cells[j] && (cells[j].textContent || cells[j].innerText).toUpperCase().indexOf(filter) > -1) {
+            found = true; break;
+          }
+        }
+        rows[i].style.display = found ? '' : 'none';
+      }
+    });
+  }
+
+  function filterByStatus(status) {
+    const table = document.getElementById('hospitalTable');
+    if (!table) return;
+    const rows = table.getElementsByTagName('tr');
+    for (let i = 1; i < rows.length; i++) {
+      const rowStatus = rows[i].getAttribute('data-status');
+      rows[i].style.display = (status === 'all' || rowStatus === status) ? '' : 'none';
+    }
+  }
+</script>
+
+{% endblock %}
+
+
+<!--last updated-->

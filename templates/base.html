@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block page_title %}BloodBridge{% endblock %} — Blood Donation System</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+    /* ═══════════════════════════
+       VARIABLES
+    ═══════════════════════════ */
+    :root {
+        --red:       #c0392b;
+        --red-dark:  #922b21;
+        --red-light: #f9ebea;
+        --red-glow:  rgba(192,57,43,0.18);
+        --ink:       #1a0a08;
+        --ink-mid:   #4a1c17;
+        --muted:     #8b6b68;
+        --cream:     #fdf8f7;
+        --white:     #ffffff;
+        --border:    rgba(192,57,43,0.12);
+    }
+
+    /* ═══════════════════════════
+       RESET
+    ═══════════════════════════ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: var(--cream);
+        color: var(--ink);
+        overflow-x: hidden;
+        padding-top: 68px; /* navbar height */
+    }
+
+    /* ═══════════════════════════
+       NAVBAR
+    ═══════════════════════════ */
+    .site-navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        height: 68px;
+        background: rgba(253,248,247,0.95);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 2.5rem;
+        transition: box-shadow 0.3s;
+    }
+
+    .site-navbar.scrolled {
+        box-shadow: 0 4px 24px var(--red-glow);
+    }
+
+    /* logo */
+    .nav-logo {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        text-decoration: none;
+    }
+
+    .nav-logo .drop {
+        width: 28px;
+        height: 28px;
+        background: var(--red);
+        border-radius: 50% 50% 50% 0;
+        transform: rotate(-45deg);
+        flex-shrink: 0;
+        box-shadow: 0 4px 12px var(--red-glow);
+        animation: dropPulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes dropPulse {
+        0%,100% { transform: rotate(-45deg) scale(1); }
+        50%      { transform: rotate(-45deg) scale(1.1); }
+    }
+
+    .nav-logo .brand {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--ink);
+        letter-spacing: -0.2px;
+    }
+
+    .nav-logo .brand em {
+        color: var(--red);
+        font-style: normal;
+    }
+
+    /* desktop links */
+    .nav-center {
+        display: flex;
+        align-items: center;
+        gap: 0.2rem;
+    }
+
+    .nav-center a {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--muted);
+        text-decoration: none;
+        padding: 0.42rem 0.85rem;
+        border-radius: 7px;
+        transition: all 0.18s;
+        white-space: nowrap;
+    }
+
+    .nav-center a:hover,
+    .nav-center a.active {
+        color: var(--red);
+        background: var(--red-light);
+    }
+
+    /* auth side */
+    .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .btn-nav-reg {
+        background: var(--red);
+        color: #fff;
+        padding: 0.44rem 1.1rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 3px 12px var(--red-glow);
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+
+    .btn-nav-reg:hover {
+        background: var(--red-dark);
+        color: #fff;
+        transform: translateY(-1px);
+        text-decoration: none;
+    }
+
+    /* login dropdown */
+    .nav-dropdown { position: relative; }
+
+    .btn-nav-login {
+        background: transparent;
+        color: var(--ink-mid);
+        border: 1.5px solid var(--border);
+        padding: 0.42rem 1rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+        transition: all 0.18s;
+        white-space: nowrap;
+    }
+
+    .btn-nav-login:hover { border-color: var(--red); color: var(--red); }
+    .btn-nav-login .arr { font-size: 0.6rem; transition: transform 0.2s; }
+    .nav-dropdown.open .arr { transform: rotate(180deg); }
+
+    .nav-dropdown-menu {
+        display: none;
+        position: absolute;
+        top: calc(100% + 8px);
+        right: 0;
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 0.4rem;
+        min-width: 200px;
+        box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+        z-index: 200;
+    }
+
+    .nav-dropdown.open .nav-dropdown-menu {
+        display: block;
+        animation: dropIn 0.18s ease;
+    }
+
+    @keyframes dropIn {
+        from { opacity: 0; transform: translateY(-6px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .nav-dropdown-menu a {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.6rem 0.8rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--ink-mid);
+        text-decoration: none;
+        transition: all 0.15s;
+    }
+
+    .nav-dropdown-menu a:hover {
+        background: var(--red-light);
+        color: var(--red);
+        text-decoration: none;
+    }
+
+    .nav-dropdown-menu .d-icon {
+        width: 28px;
+        height: 28px;
+        background: var(--red-light);
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+    }
+
+    /* hamburger */
+    .nav-hamburger {
+        display: none;
+        flex-direction: column;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 5px;
+        margin-left: auto;
+    }
+
+    .nav-hamburger span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        background: var(--ink);
+        border-radius: 2px;
+        transition: all 0.25s;
+    }
+
+    .nav-hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+    .nav-hamburger.active span:nth-child(2) { opacity: 0; }
+    .nav-hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+    /* mobile dropdown */
+    .mobile-nav-menu {
+        display: none;
+        position: fixed;
+        top: 68px;
+        left: 0;
+        right: 0;
+        z-index: 999;
+        background: var(--white);
+        border-bottom: 1px solid var(--border);
+        padding: 0.75rem 1.5rem 1.25rem;
+        flex-direction: column;
+        gap: 0.25rem;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .mobile-nav-menu.open { display: flex; }
+
+    .mobile-nav-menu a {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--ink-mid);
+        text-decoration: none;
+        padding: 0.65rem 0.25rem;
+        border-bottom: 1px solid #f5eeee;
+        transition: color 0.18s;
+    }
+
+    .mobile-nav-menu a:hover { color: var(--red); text-decoration: none; }
+    .mobile-nav-menu hr { border: none; border-top: 1px solid var(--border); margin: 0.35rem 0; }
+
+    .mobile-nav-menu .m-btn {
+        display: block;
+        text-align: center;
+        padding: 0.65rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        margin-top: 0.25rem;
+        border-bottom: none;
+        transition: all 0.18s;
+    }
+
+    .mobile-nav-menu .m-btn.reg { background: var(--red); color: #fff; }
+    .mobile-nav-menu .m-btn.reg:hover { background: var(--red-dark); text-decoration: none; }
+    .mobile-nav-menu .m-btn.log { border: 1.5px solid var(--border); color: var(--ink-mid); }
+    .mobile-nav-menu .m-btn.log:hover { border-color: var(--red); color: var(--red); text-decoration: none; }
+
+    /* ═══════════════════════════
+       FLASH MESSAGES
+    ═══════════════════════════ */
+    .flash-container {
+        max-width: 800px;
+        margin: 1.5rem auto 0;
+        padding: 0 1.5rem;
+    }
+
+    .flash-msg {
+        padding: 0.85rem 1.25rem;
+        border-radius: 10px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        animation: fadeUp 0.4s ease;
+    }
+
+    .flash-msg.success { background: #f0fdf6; border: 1px solid #c6f0dc; color: #2e7d52; }
+    .flash-msg.error   { background: #fff1f1; border: 1px solid #fbd5d5; color: var(--red); }
+    .flash-msg.info    { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
+    .flash-msg.warning { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+
+    /* ═══════════════════════════
+       PAGE CONTENT AREA
+    ═══════════════════════════ */
+    .page-content {
+        min-height: calc(100vh - 68px);
+    }
+
+    /* ═══════════════════════════
+       FOOTER
+    ═══════════════════════════ */
+    .site-footer {
+        background: var(--ink);
+        padding: 2.5rem;
+        text-align: center;
+        margin-top: auto;
+    }
+
+    .site-footer p {
+        font-size: 0.82rem;
+        color: rgba(255,255,255,0.35);
+    }
+
+    .site-footer span { color: var(--red); }
+
+    /* ═══════════════════════════
+       UTILITY — shared across pages
+    ═══════════════════════════ */
+    .btn-primary-red {
+        background: var(--red);
+        color: #fff;
+        padding: 0.7rem 1.75rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        box-shadow: 0 4px 16px var(--red-glow);
+        transition: all 0.2s;
+    }
+
+    .btn-primary-red:hover {
+        background: var(--red-dark);
+        color: #fff;
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
+
+    .btn-outline-red {
+        background: transparent;
+        color: var(--red);
+        border: 1.5px solid var(--red);
+        padding: 0.65rem 1.5rem;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        transition: all 0.2s;
+    }
+
+    .btn-outline-red:hover {
+        background: var(--red-light);
+        color: var(--red);
+        text-decoration: none;
+    }
+
+    .card-base {
+        background: var(--white);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 2rem;
+        transition: all 0.3s;
+    }
+
+    .card-base:hover {
+        box-shadow: 0 8px 32px var(--red-glow);
+        border-color: rgba(192,57,43,0.25);
+        transform: translateY(-3px);
+    }
+
+    .section-label {
+        display: inline-block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--red);
+        margin-bottom: 0.6rem;
+    }
+
+    .section-heading {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(1.6rem, 3vw, 2.4rem);
+        font-weight: 700;
+        color: var(--ink);
+        letter-spacing: -0.4px;
+        line-height: 1.2;
+    }
+
+    /* scroll reveal */
+    .reveal {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+
+    .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(16px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ═══════════════════════════
+       RESPONSIVE
+    ═══════════════════════════ */
+    @media (max-width: 768px) {
+        .nav-center { display: none; }
+        .nav-right  { display: none; }
+        .nav-hamburger { display: flex; }
+        .site-navbar { padding: 0 1.25rem; }
+    }
+
+    /* ═══════════════════════════
+       PAGE-SPECIFIC OVERRIDES
+       (each page can add its own
+        <style> inside the block)
+    ═══════════════════════════ */
+    {% block extra_styles %}{% endblock %}
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════════
+         NAVBAR
+    ════════════════ -->
+    <nav class="site-navbar" id="siteNavbar">
+
+        <a href="{{ url_for('home') }}" class="nav-logo">
+            <div class="drop"></div>
+            <span class="brand">Blood<em>Bridge</em></span>
+        </a>
+
+        <div class="nav-center">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="#about">About</a>
+            <a href="#how">How It Works</a>
+        </div>
+
+        <div class="nav-right">
+            <a href="{{ url_for('Registration_page') }}" class="btn-nav-reg">Register</a>
+
+            <div class="nav-dropdown" id="loginDropdown">
+                <button class="btn-nav-login" onclick="toggleLoginDropdown()">
+                    Login <span class="arr">▾</span>
+                </button>
+                <div class="nav-dropdown-menu">
+                    <a href="{{ url_for('hospital_login') }}">
+                        <span class="d-icon">🏥</span> Hospital
+                    </a>
+                    <a href="{{ url_for('patient_login') }}">
+                        <span class="d-icon">🧑‍⚕️</span> Patient
+                    </a>
+                    <a href="{{ url_for('admin_login') }}">
+                        <span class="d-icon">🔐</span> Admin
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileMenu()">
+            <span></span><span></span><span></span>
+        </button>
+
+    </nav>
+
+    <!-- Mobile menu -->
+    <div class="mobile-nav-menu" id="mobileNavMenu">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="#about">About</a>
+        <a href="#how">How It Works</a>
+        <hr>
+        <a href="{{ url_for('hospital_login') }}" class="m-btn log">🏥 Hospital Login</a>
+        <a href="{{ url_for('patient_login') }}"  class="m-btn log">🧑‍⚕️ Patient Login</a>
+        <a href="{{ url_for('admin_login') }}"    class="m-btn log">🔐 Admin Login</a>
+        <a href="{{ url_for('Registration_page') }}" class="m-btn reg">Register Now</a>
+    </div>
+
+    <!-- ═══════════════
+         FLASH MESSAGES
+    ════════════════ -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-container">
+            {% for category, message in messages %}
+            <div class="flash-msg {{ category }}">
+                {% if category == 'success' %}✅{% elif category == 'error' %}⚠️{% elif category == 'warning' %}⚡{% else %}ℹ️{% endif %}
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- ═══════════════
+         PAGE CONTENT
+    ════════════════ -->
+    <main class="page-content">
+        {% block title %}{% endblock %}
+    </main>
+
+    <!-- ═══════════════
+         FOOTER
+    ════════════════ -->
+    <footer class="site-footer">
+        <p>© 2025 <span>BloodBridge</span> — Designed with ❤️ for humanity. Every drop counts.</p>
+    </footer>
+
+    <script>
+        // ── Navbar scroll shadow ──
+        window.addEventListener('scroll', function() {
+            var nav = document.getElementById('siteNavbar');
+            nav.classList.toggle('scrolled', window.scrollY > 20);
+        });
+
+        // ── Login dropdown ──
+        function toggleLoginDropdown() {
+            document.getElementById('loginDropdown').classList.toggle('open');
+        }
+
+        document.addEventListener('click', function(e) {
+            var dd = document.getElementById('loginDropdown');
+            if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+        });
+
+        // ── Mobile menu ──
+        function toggleMobileMenu() {
+            document.getElementById('mobileNavMenu').classList.toggle('open');
+            document.getElementById('navHamburger').classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(e) {
+            var menu   = document.getElementById('mobileNavMenu');
+            var burger = document.getElementById('navHamburger');
+            if (menu && burger && !menu.contains(e.target) && !burger.contains(e.target)) {
+                menu.classList.remove('open');
+                burger.classList.remove('active');
+            }
+        });
+
+        // ── Scroll reveal ──
+        var revealEls = document.querySelectorAll('.reveal');
+        var revealObs = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1 });
+        revealEls.forEach(function(el) { revealObs.observe(el); });
+
+        // ── Auto-dismiss flash messages ──
+        setTimeout(function() {
+            document.querySelectorAll('.flash-msg').forEach(function(el) {
+                el.style.transition = 'opacity 0.4s';
+                el.style.opacity = '0';
+                setTimeout(function() { el.remove(); }, 400);
+            });
+        }, 4000);
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
+
+</body>
+</html>

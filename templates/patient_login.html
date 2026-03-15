@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Login — BloodBridge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+
+/* ═══════════════════════════════
+   VARIABLES
+═══════════════════════════════ */
+:root {
+    --red:       #c0392b;
+    --red-dark:  #922b21;
+    --red-light: #f9ebea;
+    --red-glow:  rgba(192,57,43,0.18);
+    --ink:       #1a0a08;
+    --ink-mid:   #4a1c17;
+    --muted:     #8b6b68;
+    --cream:     #fdf8f7;
+    --border:    rgba(192,57,43,0.12);
+    --white:     #ffffff;
+}
+
+/* ═══════════════════════════════
+   RESET & BASE
+═══════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ═══════════════════════════════
+   NAVBAR
+═══════════════════════════════ */
+.navbar {
+    width: 100%;
+    height: 64px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    flex-shrink: 0;
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+}
+
+.nav-logo .drop {
+    width: 28px;
+    height: 28px;
+    background: var(--red);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    animation: pulse 2.5s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: rotate(-45deg) scale(1); }
+    50%       { transform: rotate(-45deg) scale(1.1); }
+}
+
+.nav-logo span {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.nav-logo span em { color: var(--red); font-style: normal; }
+
+.nav-back {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.4rem 0.85rem;
+    border-radius: 8px;
+    transition: all 0.18s;
+    border: 1px solid var(--border);
+}
+
+.nav-back:hover { color: var(--red); border-color: var(--red); background: var(--red-light); }
+
+/* ═══════════════════════════════
+   MAIN LAYOUT
+═══════════════════════════════ */
+.page {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: calc(100vh - 64px);
+}
+
+/* ═══════════════════════════════
+   LEFT PANEL
+═══════════════════════════════ */
+.left-panel {
+    background: linear-gradient(160deg, var(--red) 0%, var(--red-dark) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 4rem 3.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* dot grid overlay */
+.left-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+}
+
+/* decorative circle */
+.left-panel::after {
+    content: '';
+    position: absolute;
+    bottom: -120px;
+    right: -120px;
+    width: 400px;
+    height: 400px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.panel-content { position: relative; z-index: 1; }
+
+.panel-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.9);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.2);
+    margin-bottom: 1.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.panel-tag .dot {
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    animation: blink 1.4s ease-in-out infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.3; }
+}
+
+.panel-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    margin-bottom: 1.25rem;
+}
+
+.panel-desc {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.8;
+    max-width: 360px;
+    margin-bottom: 2.5rem;
+}
+
+/* feature list */
+.feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.feature-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    color: rgba(255,255,255,0.85);
+    font-weight: 500;
+}
+
+.feature-list li .check {
+    width: 22px;
+    height: 22px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    flex-shrink: 0;
+    color: #fff;
+}
+
+/* blood type badges */
+.blood-types {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 2.5rem;
+}
+
+.btype {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.9);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.3rem 0.75rem;
+    border-radius: 6px;
+    font-family: 'Playfair Display', serif;
+}
+
+
+/* ═══════════════════════════════
+   RIGHT PANEL — FORM
+═══════════════════════════════ */
+.right-panel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2.5rem;
+    background: var(--cream);
+}
+
+.form-box {
+    width: 100%;
+    max-width: 400px;
+}
+
+.form-header { margin-bottom: 2.25rem; }
+
+.form-header .form-icon {
+    width: 52px;
+    height: 52px;
+    background: var(--red-light);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid var(--border);
+}
+
+.form-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+    margin-bottom: 0.4rem;
+}
+
+.form-header p {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+/* ── FORM ELEMENTS ── */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--ink-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 0.5rem;
+}
+
+.input-wrap {
+    position: relative;
+}
+
+.input-wrap .input-icon {
+    position: absolute;
+    left: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.9rem;
+    pointer-events: none;
+    color: var(--muted);
+}
+
+.input-field {
+    width: 100%;
+    padding: 0.75rem 0.9rem 0.75rem 2.5rem;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--ink);
+    outline: none;
+    transition: all 0.2s;
+}
+
+.input-field::placeholder { color: #ccc; }
+
+.input-field:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px var(--red-glow);
+    background: var(--white);
+}
+
+/* password toggle */
+.toggle-pw {
+    position: absolute;
+    right: 0.9rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--muted);
+    padding: 0;
+    line-height: 1;
+    transition: color 0.18s;
+}
+
+.toggle-pw:hover { color: var(--red); }
+
+/* error */
+.field-error {
+    font-size: 0.75rem;
+    color: var(--red);
+    margin-top: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+/* flash messages */
+.flash {
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.flash.error   { background: #fff1f0; border: 1px solid #fbd5d5; color: var(--red); }
+.flash.success { background: #f0fdf6; border: 1px solid #c6f0dc; color: #2e9e66; }
+
+/* submit button */
+.btn-submit {
+    width: 100%;
+    padding: 0.85rem;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px var(--red-glow);
+    margin-top: 0.5rem;
+    letter-spacing: 0.2px;
+}
+
+.btn-submit:hover {
+    background: var(--red-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 28px rgba(192,57,43,0.3);
+}
+
+.btn-submit:active { transform: translateY(0); }
+
+/* divider */
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+
+.divider span {
+    font-size: 0.72rem;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+/* links */
+.form-links {
+    text-align: center;
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 2;
+}
+
+.form-links a {
+    color: var(--red);
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.18s;
+}
+
+.form-links a:hover { opacity: 0.75; text-decoration: underline; }
+
+/* other login options */
+.other-logins {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+}
+
+.other-login-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.6rem;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink-mid);
+    text-decoration: none;
+    transition: all 0.18s;
+}
+
+.other-login-btn:hover { border-color: var(--red); color: var(--red); background: var(--red-light); }
+
+
+/* ═══════════════════════════════
+   RESPONSIVE
+═══════════════════════════════ */
+@media (max-width: 768px) {
+    .page { grid-template-columns: 1fr; }
+    .left-panel { display: none; }
+    .right-panel { padding: 2rem 1.5rem; min-height: calc(100vh - 64px); }
+}
+
+@media (max-width: 480px) {
+    .navbar { padding: 0 1.25rem; }
+    .other-logins { grid-template-columns: 1fr; }
+}
+
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a href="/" class="nav-logo">
+        <div class="drop"></div>
+        <span>Blood<em>Bridge</em></span>
+    </a>
+    <a href="/" class="nav-back">← Back to Home</a>
+</nav>
+
+<!-- PAGE -->
+<div class="page">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+        <div class="panel-content">
+            <div class="panel-tag">
+                <span class="dot"></span>
+                Patient Portal
+            </div>
+
+            <h1 class="panel-title">Your Health,<br>Our Priority.</h1>
+
+            <p class="panel-desc">
+                Request blood, track your status in real time, and connect
+                with hospitals and donors across Kashmir — all in one place.
+            </p>
+
+            <ul class="feature-list">
+                <li>
+                    <span class="check">✓</span>
+                    Request blood by type instantly
+                </li>
+                <li>
+                    <span class="check">✓</span>
+                    Track request status in real time
+                </li>
+                <li>
+                    <span class="check">✓</span>
+                    Connect with nearby hospitals
+                </li>
+                <li>
+                    <span class="check">✓</span>
+                    Emergency alerts & notifications
+                </li>
+            </ul>
+
+            <div class="blood-types">
+                <span class="btype">A+</span>
+                <span class="btype">A−</span>
+                <span class="btype">B+</span>
+                <span class="btype">B−</span>
+                <span class="btype">O+</span>
+                <span class="btype">O−</span>
+                <span class="btype">AB+</span>
+                <span class="btype">AB−</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+        <div class="form-box">
+
+            <div class="form-header">
+                <div class="form-icon">🧑‍⚕️</div>
+                <h2>Patient Login</h2>
+                <p>Welcome back. Sign in to manage your blood requests.</p>
+            </div>
+
+            <!-- Flash messages — replace with your Jinja2 flash blocks -->
+            <!-- {% with messages = get_flashed_messages(with_categories=true) %}
+              {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+              {% endfor %}
+            {% endwith %} -->
+
+            <form method="POST" action="{{ url_for('patient_login') }}">
+                {{ form.hidden_tag() }}
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">✉️</span>
+                        {{ form.email(class="input-field", id="email", placeholder="your@email.com") }}
+                    </div>
+                    {% for error in form.email.errors %}
+                        <div class="field-error">⚠ {{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">🔒</span>
+                        {{ form.password(class="input-field", id="password", placeholder="Enter your password") }}
+                        <button type="button" class="toggle-pw" id="togglePw">👁️</button>
+                    </div>
+                    {% for error in form.password.errors %}
+                        <div class="field-error">⚠ {{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                {{ form.submit(class="btn-submit") }}
+
+            </form>
+
+            <div class="divider"><span>or sign in as</span></div>
+
+            <div class="other-logins">
+                <a href="{{ url_for('hospital_login') }}" class="other-login-btn">🏥 Hospital</a>
+                <a href="{{ url_for('admin_login') }}"    class="other-login-btn">🔐 Admin</a>
+            </div>
+
+            <div class="form-links">
+                <p>Don't have an account? <a href="{{ url_for('Registration_page') }}">Register here</a></p>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Password toggle
+    document.getElementById('togglePw').addEventListener('click', function() {
+        var field = document.getElementById('password');
+        if (field.type === 'password') {
+            field.type = 'text';
+            this.textContent = '🙈';
+        } else {
+            field.type = 'password';
+            this.textContent = '👁️';
+        }
+    });
+</script>
+
+</body>
+</html>

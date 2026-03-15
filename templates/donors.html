@@ -1,0 +1,631 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+/* ═══════════════════════════════
+   VARIABLES
+═══════════════════════════════ */
+:root {
+    --red:         #c0392b;
+    --red-dark:    #922b21;
+    --red-light:   #f9ebea;
+    --red-glow:    rgba(192,57,43,0.18);
+    --ink:         #1a0a08;
+    --ink-mid:     #4a1c17;
+    --muted:       #8b6b68;
+    --cream:       #fdf8f7;
+    --border:      rgba(192,57,43,0.12);
+    --white:       #ffffff;
+    --green:       #2e9e66;
+    --green-light: #f0fdf6;
+    --green-border:#c6f0dc;
+}
+
+/* ═══════════════════════════════
+   RESET & BASE
+═══════════════════════════════ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ═══════════════════════════════
+   NAVBAR
+═══════════════════════════════ */
+.navbar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 64px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    gap: 1rem;
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.nav-logo .drop {
+    width: 28px; height: 28px;
+    background: var(--red);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    animation: pulse 2.5s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: rotate(-45deg) scale(1); }
+    50%       { transform: rotate(-45deg) scale(1.1); }
+}
+
+.nav-logo span {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+    white-space: nowrap;
+}
+
+.nav-logo span em { color: var(--red); font-style: normal; }
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.15rem;
+    margin: 0 auto;
+}
+
+.nav-links a {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.42rem 0.75rem;
+    border-radius: 7px;
+    transition: all 0.18s;
+    white-space: nowrap;
+}
+
+.nav-links a:hover  { color: var(--red); background: var(--red-light); }
+.nav-links a.active { color: var(--red); background: var(--red-light); font-weight: 600; }
+
+.nav-right { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+
+.btn-logout {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.42rem 0.9rem;
+    border-radius: 7px;
+    border: 1.5px solid var(--border);
+    transition: all 0.18s;
+}
+
+.btn-logout:hover { color: var(--red); border-color: var(--red); background: var(--red-light); }
+
+/* ═══════════════════════════════
+   PAGE WRAPPER
+═══════════════════════════════ */
+.page-wrapper {
+    padding-top: 64px;
+    min-height: 100vh;
+}
+
+.page-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+}
+
+/* ═══════════════════════════════
+   PAGE HEADER
+═══════════════════════════════ */
+.page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+}
+
+.page-header-left .header-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--red);
+    margin-bottom: 0.4rem;
+    display: block;
+}
+
+.page-header-left h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.9rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+}
+
+.page-header-left p {
+    font-size: 0.875rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+}
+
+.stats-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--red-light);
+    border: 1px solid rgba(192,57,43,0.2);
+    border-radius: 20px;
+    padding: 0.45rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--red);
+    flex-shrink: 0;
+}
+
+/* ═══════════════════════════════
+   SEARCH & FILTER BAR
+═══════════════════════════════ */
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 220px;
+}
+
+.search-wrap .s-icon {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem;
+    color: var(--muted);
+    pointer-events: none;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.65rem 0.9rem 0.65rem 2.4rem;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-family: inherit;
+    color: var(--ink);
+    outline: none;
+    transition: all 0.2s;
+}
+
+.search-input::placeholder { color: #ccc; }
+
+.search-input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px var(--red-glow);
+}
+
+.bg-filters {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+
+.bg-pill {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    color: var(--muted);
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Playfair Display', serif;
+    transition: all 0.18s;
+}
+
+.bg-pill:hover  { border-color: var(--red); color: var(--red); }
+.bg-pill.active { background: var(--red); color: #fff; border-color: var(--red); }
+
+/* ═══════════════════════════════
+   TABLE CARD
+═══════════════════════════════ */
+.table-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+}
+
+.table-wrapper { overflow-x: auto; }
+
+.table-wrapper::-webkit-scrollbar { height: 5px; }
+.table-wrapper::-webkit-scrollbar-track { background: var(--cream); }
+.table-wrapper::-webkit-scrollbar-thumb { background: var(--red); border-radius: 99px; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+thead tr {
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+}
+
+th {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+th:first-child { padding-left: 1.5rem; }
+th:last-child  { padding-right: 1.5rem; }
+
+tbody tr {
+    border-bottom: 1px solid rgba(192,57,43,0.06);
+    transition: background 0.18s;
+}
+
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover      { background: var(--red-light); }
+
+td {
+    padding: 1rem;
+    font-size: 0.875rem;
+    color: var(--ink-mid);
+    vertical-align: middle;
+}
+
+td:first-child { padding-left: 1.5rem; }
+td:last-child  { padding-right: 1.5rem; }
+
+/* donor row — avatar + name */
+.donor-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.donor-avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--red-light);
+    border: 1.5px solid rgba(192,57,43,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--red);
+    flex-shrink: 0;
+    text-transform: uppercase;
+}
+
+.donor-name {
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 0.9rem;
+}
+
+/* blood group badge */
+.blood-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--red);
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: 0.875rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    min-width: 50px;
+    letter-spacing: 0.5px;
+}
+
+/* age badge */
+.age-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--red-light);
+    color: var(--ink-mid);
+    border: 1px solid var(--border);
+    font-weight: 600;
+    font-size: 0.8rem;
+    padding: 0.28rem 0.7rem;
+    border-radius: 8px;
+}
+
+/* address */
+.td-address {
+    font-size: 0.8rem;
+    color: var(--muted);
+    max-width: 200px;
+}
+
+/* contact button */
+.contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: var(--red-light);
+    color: var(--red);
+    border: 1.5px solid rgba(192,57,43,0.2);
+    padding: 0.38rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.18s;
+    white-space: nowrap;
+}
+
+.contact-btn:hover {
+    background: var(--red);
+    color: #fff;
+    border-color: var(--red);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px var(--red-glow);
+}
+
+/* serial number */
+.td-sno {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+/* ═══════════════════════════════
+   EMPTY STATE
+═══════════════════════════════ */
+.empty-state {
+    text-align: center;
+    padding: 5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.empty-state .es-icon { font-size: 3.5rem; opacity: 0.4; }
+
+.empty-state h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.empty-state p { font-size: 0.875rem; color: var(--muted); }
+
+/* ═══════════════════════════════
+   RESPONSIVE
+═══════════════════════════════ */
+@media (max-width: 640px) {
+    .navbar { padding: 0 1.25rem; }
+    .nav-links { display: none; }
+    .page-inner { padding: 2rem 1.25rem 4rem; }
+    .page-header { flex-direction: column; align-items: flex-start; }
+    .search-bar { flex-direction: column; align-items: stretch; }
+}
+
+</style>
+
+<!-- ═══════════════════
+     NAVBAR
+════════════════════ -->
+<nav class="navbar">
+    <a href="{{ url_for('home') }}" class="nav-logo">
+        <div class="drop"></div>
+        <span>Blood<em>Bridge</em></span>
+    </a>
+
+    <div class="nav-links">
+        <a href="{{ url_for('view_hospital') }}">🩸 Blood Stock</a>
+        <a href="{{ url_for('donors') }}" class="active">❤️ Donors</a>
+        <a href="{{ url_for('blood_requests') }}">📩 Blood Requests</a>
+    </div>
+
+    <div class="nav-right">
+        <a href="{{ url_for('home') }}" class="btn-logout">Logout</a>
+    </div>
+</nav>
+
+<!-- ═══════════════════
+     PAGE
+════════════════════ -->
+<div class="page-wrapper">
+    <div class="page-inner">
+
+        <!-- Header -->
+        <div class="page-header">
+            <div class="page-header-left">
+                <span class="header-tag">🏥 Hospital Dashboard</span>
+                <h1>Available Donors</h1>
+                <p>View and manage registered blood donors in the system</p>
+            </div>
+            {% if donors %}
+            <span class="stats-pill">
+                👥 {{ donors|length }} Donor{{ 's' if donors|length != 1 }}
+            </span>
+            {% endif %}
+        </div>
+
+        {% if donors %}
+
+        <!-- Search & Filter -->
+        <div class="search-bar">
+            <div class="search-wrap">
+                <span class="s-icon">🔍</span>
+                <input type="text" class="search-input" id="searchInput"
+                       placeholder="Search by name, contact or address...">
+            </div>
+            <div class="bg-filters">
+                <button class="bg-pill active" data-bg="all">All</button>
+                <button class="bg-pill" data-bg="A+">A+</button>
+                <button class="bg-pill" data-bg="A-">A−</button>
+                <button class="bg-pill" data-bg="B+">B+</button>
+                <button class="bg-pill" data-bg="B-">B−</button>
+                <button class="bg-pill" data-bg="O+">O+</button>
+                <button class="bg-pill" data-bg="O-">O−</button>
+                <button class="bg-pill" data-bg="AB+">AB+</button>
+                <button class="bg-pill" data-bg="AB-">AB−</button>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-card">
+            <div class="table-wrapper">
+                <table id="donorsTable">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Donor</th>
+                            <th>Blood Group</th>
+                            <th>Age</th>
+                            <th>Contact</th>
+                            <th>Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for donor in donors %}
+                        <tr data-name="{{ donor.name | lower }}"
+                            data-contact="{{ donor.contact | lower }}"
+                            data-address="{{ donor.address | lower }}"
+                            data-bg="{{ donor.blood_group }}">
+
+                            <td class="td-sno">{{ loop.index }}</td>
+
+                            <td>
+                                <div class="donor-cell">
+                                    <div class="donor-avatar">
+                                        {{ donor.name[0] if donor.name else '?' }}
+                                    </div>
+                                    <span class="donor-name">{{ donor.name }}</span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <span class="blood-badge">{{ donor.blood_group }}</span>
+                            </td>
+
+                            <td>
+                                <span class="age-badge">🎂 {{ donor.age }} yrs</span>
+                            </td>
+
+                            <td>
+                                <a href="tel:{{ donor.contact }}" class="contact-btn">
+                                    📞 {{ donor.contact }}
+                                </a>
+                            </td>
+
+                            <td class="td-address">{{ donor.address }}</td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {% else %}
+
+        <div class="table-card">
+            <div class="empty-state">
+                <div class="es-icon">💝</div>
+                <h3>No Donors Found</h3>
+                <p>There are currently no registered donors in the system</p>
+            </div>
+        </div>
+
+        {% endif %}
+
+    </div>
+</div>
+
+<script>
+    var currentBg = 'all';
+
+    // Blood group filter
+    var pills = document.querySelectorAll('.bg-pill');
+    pills.forEach(function(pill) {
+        pill.addEventListener('click', function() {
+            currentBg = this.getAttribute('data-bg');
+            pills.forEach(function(p) { p.classList.remove('active'); });
+            this.classList.add('active');
+            filterTable();
+        });
+    });
+
+    // Search
+    var searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', filterTable);
+    }
+
+    function filterTable() {
+        var query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        var rows  = document.querySelectorAll('#donorsTable tbody tr');
+
+        rows.forEach(function(row) {
+            var name    = row.getAttribute('data-name')    || '';
+            var contact = row.getAttribute('data-contact') || '';
+            var address = row.getAttribute('data-address') || '';
+            var bg      = row.getAttribute('data-bg')      || '';
+
+            var matchSearch = !query ||
+                name.includes(query) ||
+                contact.includes(query) ||
+                address.includes(query);
+
+            var matchBg = currentBg === 'all' || bg === currentBg;
+
+            row.style.display = (matchSearch && matchBg) ? '' : 'none';
+        });
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,445 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+:root {
+    --red:       #c0392b;
+    --red-dark:  #922b21;
+    --red-light: #f9ebea;
+    --red-glow:  rgba(192,57,43,0.18);
+    --ink:       #1a0a08;
+    --ink-mid:   #4a1c17;
+    --muted:     #8b6b68;
+    --cream:     #fdf8f7;
+    --border:    rgba(192,57,43,0.12);
+    --white:     #ffffff;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ── NAVBAR ── */
+.navbar {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    height: 64px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+}
+
+.nav-logo .drop {
+    width: 28px; height: 28px;
+    background: var(--red);
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    animation: pulse 2.5s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: rotate(-45deg) scale(1); }
+    50%       { transform: rotate(-45deg) scale(1.1); }
+}
+
+.nav-logo span {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.nav-logo span em { color: var(--red); font-style: normal; }
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.nav-link {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-decoration: none;
+    padding: 0.42rem 0.9rem;
+    border-radius: 7px;
+    border: 1.5px solid transparent;
+    transition: all 0.18s;
+}
+
+.nav-link:hover { color: var(--red); background: var(--red-light); border-color: var(--border); }
+
+.dropdown { position: relative; }
+
+.dropdown-btn {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    background: transparent;
+    border: 1.5px solid var(--border);
+    padding: 0.42rem 0.9rem;
+    border-radius: 7px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.18s;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.dropdown-btn:hover { color: var(--red); border-color: var(--red); background: var(--red-light); }
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.4rem;
+    min-width: 200px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+    z-index: 100;
+}
+
+.dropdown:hover .dropdown-menu { display: block; animation: dropIn 0.18s ease; }
+
+@keyframes dropIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.83rem;
+    font-weight: 500;
+    color: var(--ink-mid);
+    text-decoration: none;
+    transition: all 0.15s;
+}
+
+.dropdown-menu a:hover { background: var(--red-light); color: var(--red); }
+
+.nav-logout {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    padding: 0.42rem 1rem;
+    border-radius: 7px;
+    background: var(--red);
+    border: 1.5px solid var(--red);
+    transition: all 0.18s;
+}
+
+.nav-logout:hover { background: var(--red-dark); border-color: var(--red-dark); }
+
+/* ── PAGE ── */
+.page-wrapper {
+    padding-top: 64px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 3rem;
+}
+
+.form-box {
+    width: 100%;
+    max-width: 520px;
+    margin: 3rem 2rem;
+}
+
+/* header */
+.form-header { margin-bottom: 1.75rem; }
+
+.form-header .form-icon {
+    width: 52px; height: 52px;
+    background: var(--red-light);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 1.1rem;
+    border: 1px solid var(--border);
+}
+
+.form-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+    margin-bottom: 0.35rem;
+}
+
+.form-header h2 em { color: var(--red); font-style: normal; }
+
+.form-header p {
+    font-size: 0.875rem;
+    color: var(--muted);
+}
+
+/* form card */
+.form-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 2rem;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--ink-mid);
+}
+
+.input-wrap { position: relative; }
+
+.input-wrap .i-icon {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem;
+    pointer-events: none;
+    color: var(--muted);
+}
+
+.input-wrap input,
+.input-wrap select {
+    width: 100%;
+    padding: 0.75rem 0.9rem 0.75rem 2.4rem;
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--ink);
+    outline: none;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.input-wrap input:focus,
+.input-wrap select:focus {
+    border-color: var(--red);
+    background: var(--white);
+    box-shadow: 0 0 0 3px var(--red-glow);
+}
+
+.input-wrap input::placeholder { color: var(--muted); font-weight: 400; }
+
+.input-wrap select {
+    appearance: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23c0392b' d='M5 7L1 3h8z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+    padding-right: 2.2rem;
+}
+
+/* divider */
+.divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.5rem 0 1.25rem;
+}
+
+/* submit */
+.btn-submit {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 20px var(--red-glow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-submit:hover {
+    background: var(--red-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 28px rgba(192,57,43,0.3);
+}
+
+/* flash messages */
+.flash-success {
+    background: #eafaf1;
+    border: 1px solid rgba(30,132,73,0.2);
+    color: #1e8449;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+@media (max-width: 480px) {
+    .navbar { padding: 0 1.25rem; }
+    .form-box { margin: 2rem 1.25rem; }
+}
+
+</style>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a href="{{ url_for('home') }}" class="nav-logo">
+        <div class="drop"></div>
+        <span>Blood<em>Bridge</em></span>
+    </a>
+    <div class="nav-links">
+        <a href="{{ url_for('patient_dashboard') }}" class="nav-link">🏠 Home</a>
+
+        <div class="dropdown">
+            <button class="dropdown-btn">🩸 Blood ▾</button>
+            <div class="dropdown-menu">
+                <a href="{{ url_for('check_availability') }}">🔍 Check Availability</a>
+                <a href="{{ url_for('become_donor') }}">💉 Become a Donor</a>
+                <a href="{{ url_for('p_blood_request') }}">📝 Request Blood</a>
+            </div>
+        </div>
+
+        <a href="{{ url_for('home') }}" class="nav-logout">Logout</a>
+    </div>
+</nav>
+
+<!-- PAGE -->
+<div class="page-wrapper">
+    <div class="form-box">
+
+        <div class="form-header">
+            <div class="form-icon">📝</div>
+            <h2>Request <em>Blood</em></h2>
+            <p>Fill in the details below and we'll match you with the nearest available donor.</p>
+        </div>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="flash-success">✅ {{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="form-card">
+            <form method="POST" action="{{ url_for('p_blood_request') }}">
+
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <div class="input-wrap">
+                        <span class="i-icon">👤</span>
+                        <input type="text" id="name" name="name"
+                               placeholder="Enter your full name" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="blood_group">Blood Group</label>
+                    <div class="input-wrap">
+                        <span class="i-icon">🩸</span>
+                        <select id="blood_group" name="blood_group" required>
+                            <option value="">Select Blood Group</option>
+                            <option value="A+">A+  (A Positive)</option>
+                            <option value="A-">A−  (A Negative)</option>
+                            <option value="B+">B+  (B Positive)</option>
+                            <option value="B-">B−  (B Negative)</option>
+                            <option value="AB+">AB+ (AB Positive)</option>
+                            <option value="AB-">AB− (AB Negative)</option>
+                            <option value="O+">O+  (O Positive)</option>
+                            <option value="O-">O−  (O Negative)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="units">Units Needed</label>
+                    <div class="input-wrap">
+                        <span class="i-icon">💉</span>
+                        <input type="number" id="units" name="units_requested"
+                               placeholder="Enter units needed" min="1" required>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="form-group">
+                    <label for="contact">Contact Number</label>
+                    <div class="input-wrap">
+                        <span class="i-icon">📞</span>
+                        <input type="text" id="contact" name="contact"
+                               placeholder="Enter your contact number" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <div class="input-wrap">
+                        <span class="i-icon">📍</span>
+                        <input type="text" id="address" name="address"
+                               placeholder="Enter your address" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">🩸 Submit Request</button>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

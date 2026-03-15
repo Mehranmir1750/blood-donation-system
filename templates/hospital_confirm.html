@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+
+{% block title %}Registration Successful{% endblock %}
+
+{% block content %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --red:#c0392b; --red-dark:#922b21; --red-light:#f9ebea;
+  --red-glow:rgba(192,57,43,0.18); --ink:#1a0a08; --ink-mid:#4a1c17;
+  --muted:#8b6b68; --cream:#fdf8f7; --border:rgba(192,57,43,0.12); --white:#ffffff;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* NAVBAR */
+.navbar {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 64px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1000;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+
+.nav-logo .drop {
+  width: 28px; height: 28px;
+  background: var(--red);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  animation: pulse 2.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: rotate(-45deg) scale(1); }
+  50%       { transform: rotate(-45deg) scale(1.1); }
+}
+
+.nav-logo span {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.nav-logo span em { color: var(--red); font-style: normal; }
+
+/* PAGE */
+.page-wrapper {
+  padding-top: 64px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 3rem;
+}
+
+.form-box {
+  width: 100%;
+  max-width: 500px;
+  margin: 3rem 2rem;
+  text-align: center;
+}
+
+.success-icon {
+  width: 72px; height: 72px;
+  background: var(--red-light);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 1.5rem;
+  border: 1px solid var(--border);
+  animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.6); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.form-header {
+  margin-bottom: 1.75rem;
+  animation: slideUp 0.5s 0.1s ease both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.form-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.3px;
+  margin-bottom: 0.5rem;
+}
+
+.form-header h2 em { color: var(--red); font-style: normal; }
+
+.form-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 2rem;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.04);
+  animation: slideUp 0.5s 0.2s ease both;
+}
+
+.message-text {
+  font-size: 0.95rem;
+  color: var(--muted);
+  line-height: 1.75;
+  margin-bottom: 1.75rem;
+}
+
+.message-text strong { color: var(--ink-mid); font-weight: 600; }
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 1.5rem 0;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+
+.info-row:last-of-type { border-bottom: none; }
+
+.info-icon {
+  width: 32px; height: 32px;
+  background: var(--red-light);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.info-row span { color: var(--muted); }
+.info-row strong { color: var(--ink); font-weight: 600; }
+
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.75rem;
+  padding: 0.9rem 2rem;
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  box-shadow: 0 4px 20px var(--red-glow);
+}
+
+.btn-home:hover {
+  background: var(--red-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px rgba(192,57,43,0.3);
+}
+
+@media (max-width: 480px) {
+  .navbar { padding: 0 1.25rem; }
+  .form-box { margin: 2rem 1.25rem; }
+}
+</style>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a href="{{ url_for('home') }}" class="nav-logo">
+    <div class="drop"></div>
+    <span>Blood<em>Bridge</em></span>
+  </a>
+</nav>
+
+<!-- PAGE -->
+<div class="page-wrapper">
+  <div class="form-box">
+
+    <div class="success-icon">✅</div>
+
+    <div class="form-header">
+      <h2>Thank <em>You!</em></h2>
+    </div>
+
+    <div class="form-card">
+      <p class="message-text">
+        Your registration has been received.<br>
+        Our team will verify whether it is a <strong>hospital or not</strong>.<br>
+        The request will be responded to within <strong>24 working hours</strong>.
+      </p>
+
+      <div class="divider"></div>
+
+      <div class="info-row">
+        <div class="info-icon">🔍</div>
+        <span>Status: <strong>Under Review</strong></span>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">⏱️</div>
+        <span>Response time: <strong>Within 24 hours</strong></span>
+      </div>
+      <div class="info-row">
+        <div class="info-icon">📧</div>
+        <span>Confirmation sent to your <strong>registered email</strong></span>
+      </div>
+
+      <a href="{{ url_for('home') }}" class="btn-home">← Back to Home</a>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
