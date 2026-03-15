@@ -14,6 +14,7 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "supersecret123")
+app.config['WTF_CSRF_ENABLED'] = True
 
 login_manager = LoginManager()
 login_manager.init_app(app)
