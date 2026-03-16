@@ -972,7 +972,7 @@
               </td>
               <td>
                 <a href="#" class="btn btn-view">👁️ View Profile</a>
-                <form method="POST" action="{{ url_for('delete_patient', patient_id=p.id) }}" style="display: inline;">
+                <form method="POST" action="{{ url_for('delete_patient', user_id=p.id) }}" style="display: inline;">
                   <button type="submit" class="btn btn-delete" onclick="return confirm('Delete this patient permanently?')">
                     🗑️ Delete
                   </button>
@@ -1123,7 +1123,7 @@
         <tbody>
           {% set unverified_hospitals = hospitals|selectattr('is_verified', 'equalto', False)|list %}
           {% if unverified_hospitals %}
-            {% for h in unverified_hospitals %}
+            {% for h in pending_hospitals %}
             <tr>
               <td>{{ h.id }}</td>
               <td>{{ h.username }}</td>

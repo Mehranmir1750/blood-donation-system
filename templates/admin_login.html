@@ -136,22 +136,35 @@
 <!--    {% endwith %}-->
 
     <!-- Admin Login Form -->
-    <form method="POST" action="{{ url_for('admin_login') }}">
-      {{ form.hidden_tag() }}
+    {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for msg in messages %}
+      <div class="flash">{{ msg }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 
-      <div class="form-group">
-        <label for="email">{{ form.email.label }}</label>
-        {{ form.email(placeholder="Enter your admin email") }}
-      </div>
+<form method="POST" action="{{ url_for('admin_login') }}">
+  {{ form.hidden_tag() }}
 
-      <div class="form-group">
-        <label for="password">{{ form.password.label }}</label>
-        {{ form.password(placeholder="Enter password") }}
-      </div>
+  <div class="form-group">
+    <label>{{ form.email.label }}</label>
+    {{ form.email(placeholder="Enter your admin email") }}
+    {% for error in form.email.errors %}
+      <div class="flash">⚠ {{ error }}</div>
+    {% endfor %}
+  </div>
 
-      {{ form.submit(class_="btn-login") }}
-    </form>
+  <div class="form-group">
+    <label>{{ form.password.label }}</label>
+    {{ form.password(placeholder="Enter password") }}
+    {% for error in form.password.errors %}
+      <div class="flash">⚠ {{ error }}</div>
+    {% endfor %}
+  </div>
 
+  <button type="submit">🔐 Login</button>
+</form>
     <div class="footer-links">
       <a href="/">← Back to Home</a>
     </div>
