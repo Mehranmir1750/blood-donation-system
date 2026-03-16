@@ -387,5 +387,24 @@ def delete_patient(user_id):
     flash('Patient deleted.', 'info')
     return redirect(url_for('view_patient'))
 
+
+with app.app_context():
+    db.create_all()
+
+    # Auto-create admin if not exists
+    existing_admin = Users.query.filter_by(role="admin").first()
+    if not existing_admin:
+        admin = Users(
+            username="Admin",
+            email="admin@techkashmir.com",
+            password=generate_password_hash("admin123"),
+            contact="0000000000",
+            address="Admin Office",
+            role="admin",
+            status="Approved"
+        )
+        db.session.add(admin)
+        db.session.commit()
+
 if __name__ == "__main__":
     app.run()
